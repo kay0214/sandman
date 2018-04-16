@@ -1,0 +1,58 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "userId",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "resName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "resUrl",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "resGold",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "resDesc",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "resSize",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "resType",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "downCount",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "createTime",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "updateTime",
+            "fieldType": "Long"
+        }
+    ],
+    "changelogDate": "20180412065206",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "resource",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no",
+    "microserviceName": "sandman",
+    "searchEngine": false
+}

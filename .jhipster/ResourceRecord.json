@@ -1,0 +1,46 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "userId",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "resId",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "oriGold",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "resGold",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "curGold",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "resName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "opDesc",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "recordTime",
+            "fieldType": "Long"
+        }
+    ],
+    "changelogDate": "20180412070317",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "resource_record",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no",
+    "microserviceName": "sandman",
+    "searchEngine": false
+}

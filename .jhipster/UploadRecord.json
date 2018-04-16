@@ -1,0 +1,26 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "userId",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "resId",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "recordTime",
+            "fieldType": "Long"
+        }
+    ],
+    "changelogDate": "20180412070459",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "upload_record",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no",
+    "microserviceName": "sandman",
+    "searchEngine": false
+}

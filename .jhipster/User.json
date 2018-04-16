@@ -1,0 +1,46 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "userName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "password",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "mobile",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "email",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "gold",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "available",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "createTime",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "updateTime",
+            "fieldType": "Long"
+        }
+    ],
+    "changelogDate": "20180412064631",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "user",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no",
+    "microserviceName": "sandman",
+    "searchEngine": false
+}
