@@ -18,10 +18,9 @@ public class SftpUtils {
         ChannelSftp sftp = null;
         try {
             JSch jSch = new JSch();
-            Session session = jSch.getSession("root","39.104.80.30",22);
-            session.setPassword("abcd54321");
-            //Session session = jSch.getSession(SftpParam.getUSERNAME(), SftpParam.getHOST(), SftpParam.getSshPort());
-            //session.setPassword(SftpParam.getPASSWORD());
+            Session session = jSch.getSession(SftpParam.getUSERNAME(),SftpParam.getHOST(),SftpParam.getSshPort());
+            session.setPassword(SftpParam.getPASSWORD());
+
             session.setConfig("StrictHostKeyChecking", "no");
             session.setUserInfo(new JschUserInfoImpl());
 

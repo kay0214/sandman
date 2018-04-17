@@ -8,14 +8,30 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SftpParam {
-    @Value("${sftpServer.userName}")
     private static String USERNAME;
-    @Value("${sftpServer.password}")
     private static String PASSWORD;
-    @Value("${sftpServer.host}")
     private static String HOST;
-    @Value("${sftpServer.sshPort}")
     private static int SSH_PORT;
+
+    @Value("${sftpServer.userName}")
+    private void setUSERNAME(String USERNAME) {
+        SftpParam.USERNAME = USERNAME;
+    }
+
+    @Value("${sftpServer.password}")
+    private void setPASSWORD(String PASSWORD) {
+        SftpParam.PASSWORD = PASSWORD;
+    }
+
+    @Value("${sftpServer.host}")
+    private void setHOST(String HOST) {
+        SftpParam.HOST = HOST;
+    }
+
+    @Value("${sftpServer.sshPort}")
+    private void setSshPort(int sshPort) {
+        SSH_PORT = sshPort;
+    }
 
     public static String getUSERNAME() {
         return USERNAME;
