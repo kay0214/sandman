@@ -74,6 +74,9 @@ public class ResourceResource {
         log.info("fileName:{}",fileName);
         log.info("suffixName:{}",suffixName);
         log.info("fileSize={}",file.getSize());
+        File tempFile = FileUtils.getFileByMultipartFile(file);
+
+        System.out.println("tempFile:::::::::" + tempFile.getName() + ";" + tempFile.getTotalSpace());
         resourceService.uploadRes(new ResourceDTO(),file);
         if(FileUtils.uploadFile(file.getBytes(),filePath,fileName)){
             return "success!";

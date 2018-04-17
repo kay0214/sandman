@@ -12,6 +12,7 @@ public class SftpParam {
     private static String PASSWORD;
     private static String HOST;
     private static int SSH_PORT;
+    private static String PATH_PREFIX;
 
     @Value("${sftpServer.userName}")
     private void setUSERNAME(String USERNAME) {
@@ -32,6 +33,10 @@ public class SftpParam {
     private void setSshPort(int sshPort) {
         SSH_PORT = sshPort;
     }
+    @Value("${sftpServer.prefix}")
+    public static void setPathPrefix(String pathPrefix) {
+        PATH_PREFIX = pathPrefix;
+    }
 
     public static String getUSERNAME() {
         return USERNAME;
@@ -47,5 +52,9 @@ public class SftpParam {
 
     public static int getSshPort() {
         return SSH_PORT;
+    }
+
+    public static String getPathPrefix() {
+        return PATH_PREFIX;
     }
 }

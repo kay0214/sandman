@@ -2,6 +2,8 @@ package com.sandman.download.web.rest.util;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -48,7 +50,9 @@ public class FileUtils {
      * 根据文件名获取后缀名
      */
     public static String getSuffixNameByFileName(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(".") + 1);
+        if(fileName.contains("."))
+            return fileName.substring(fileName.lastIndexOf(".") + 1);
+        return "file";
     }
 
     /**
@@ -99,13 +103,13 @@ public class FileUtils {
      */
     public static boolean upload(String filePath, String fileName, File file) {
         ChannelSftp sftp = SftpUtils.getSftp();
+        mkDirectory(filePath);
         try {
 
             sftp.cd(filePath);//cd 到上传路径
             fileName = (fileName == null || "".equals(fileName)) ? file.getName() : fileName;//fileName如果为空，就取file的原名
             OutputStream outstream = sftp.put(fileName);//设置上传文件的名字
             InputStream instream = new FileInputStream(file);//设置上传文件
-
             byte b[] = new byte[1024];
             int n;
             while ((n = instream.read(b)) != -1) {
@@ -167,5 +171,45 @@ public class FileUtils {
             }
         }
         SftpUtils.closeSftpCon(sftp);
+    }
+    /**
+     * 在远程服务器上创建文件夹
+     * */
+    public static void mkDirectory(String filePath){
+        ChannelSftp sftp = SftpUtils.getSftp();
+
+        try {//首先跳到电脑根目录
+            sftp.cd("/");
+        }catch (SftpException e){}
+
+        String[] folders = filePath.split("/");
+        for(String folder:folders){//遍历目录
+            if ( folder.length() > 0 ) {
+                try {//cd 到目录，如果抛出异常，说明没有此目录
+                    sftp.cd(folder);
+                } catch ( SftpException e ) {
+                    try {
+                        sftp.mkdir(folder);//首先创建目录，然后cd 到刚刚创建的目录，进行下一次循环
+                        sftp.cd(folder);
+                    } catch (SftpException e1) {
+                        System.out.println(e1);
+                    }
+                }
+            }
+        }
+        SftpUtils.closeSftpCon(sftp);
+    }
+    /**
+     * MultipartFile转File
+     * */
+    public static File getFileByMultipartFile(MultipartFile file){
+        File resultFile = null;
+        try {
+            resultFile = File.createTempFile("temp",null);
+            file.transferTo(resultFile);
+        } catch (IOException e) {
+            System.out.println("文件转换失败!");
+        }
+        return resultFile;
     }
 }
