@@ -74,9 +74,9 @@ public class ResourceResource {
         log.info("fileName:{}",fileName);
         log.info("suffixName:{}",suffixName);
         log.info("fileSize={}",file.getSize());
-        File tempFile = FileUtils.getFileByMultipartFile(file);
+        //File tempFile = FileUtils.getFileByMultipartFile(file); //文件转换必须放到service中，因为转换后。原multiPartFile会删除
 
-        System.out.println("tempFile:::::::::" + tempFile.getName() + ";" + tempFile.getTotalSpace());
+        //System.out.println("tempFile fileName:::::::::" + tempFile.getAbsolutePath());
         resourceService.uploadRes(new ResourceDTO(),file);
         if(FileUtils.uploadFile(file.getBytes(),filePath,fileName)){
             return "success!";

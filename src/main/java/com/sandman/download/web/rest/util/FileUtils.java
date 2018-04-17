@@ -199,16 +199,27 @@ public class FileUtils {
         }
         SftpUtils.closeSftpCon(sftp);
     }
+
+    /**
+     * 获取文件名前缀
+     * */
+    public static String getPrefixByFileName(String fileName){
+        System.out.println("getPrefixByFileName====" + fileName);
+        return fileName.substring(0,fileName.indexOf("."));
+    }
     /**
      * MultipartFile转File
      * */
     public static File getFileByMultipartFile(MultipartFile file){
-        File resultFile = null;
+        System.out.println("multipartFileName=" + file.getOriginalFilename());
+        String classPath = FileUtils.class.getResource("/").toString();
+        String filePathAndName = classPath.substring(classPath.indexOf(":")+1) + File.separator + file.getOriginalFilename();
+        System.out.println("::::::::::::::" + filePathAndName);
+        File resultFile = new File(filePathAndName);
         try {
-            resultFile = File.createTempFile("temp",null);
             file.transferTo(resultFile);
         } catch (IOException e) {
-            System.out.println("文件转换失败!");
+            System.out.println(e);
         }
         return resultFile;
     }
