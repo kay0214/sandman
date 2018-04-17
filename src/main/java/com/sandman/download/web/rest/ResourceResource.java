@@ -85,38 +85,16 @@ public class ResourceResource {
     @Timed
     public String downloadResource(HttpServletResponse response){
         String filePath = "http://39.104.80.30/spkIMG/";
-        String fileName = "TestFile.txt";
+        String fileName = "li.jpg";
         File file = new File(filePath + fileName);
         log.info("fileName={}",file.getName());
-        if(file.exists()) {
-            response.setHeader("content-type", "application/octet-stream");
-            response.setContentType("application/force-download");// 设置强制下载不打开
-            byte[] buff = new byte[1024];
-            BufferedInputStream bis = null;
-            OutputStream os = null;
-            try {
-                response.addHeader("Content-Disposition", "attachment;fileName=\"" + FileUtils.getRightFileNameUseCode(fileName) + "\"");// 设置文件名
-                os = response.getOutputStream();
-                bis = new BufferedInputStream(new FileInputStream(filePath + fileName));
-                int i = bis.read(buff);
-                while (i != -1) {
-                    os.write(buff, 0, buff.length);
-                    os.flush();
-                    i = bis.read(buff);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (bis != null) {
-                    try {
-                        bis.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            System.out.println("success");
-        }
+
+        response.setHeader("content-type", "application/octet-stream");
+        response.setContentType("application/force-download");// 设置强制下载不打开
+        response.addHeader("Content-Disposition", "attachment;fileName=\"" + FileUtils.getRightFileNameUseCode(fileName) + "\"");// 设置文件名
+        FileUtils.download("/var/www/html/spkIMG/",fileName,response);
+
+
         return "success";
     }
 

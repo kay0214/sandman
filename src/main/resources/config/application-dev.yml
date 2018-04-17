@@ -145,6 +145,12 @@ jhipster:
 
 fileServer:
     prefix: c:\Test\
+sftpServer:
+    userName: root
+    password: abcd54321
+    host: 39.104.80.30
+    sshPort: 22
+    prefix: /var/www/html/spkIMG
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
