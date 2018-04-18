@@ -25,7 +25,7 @@ spring:
         include: swagger
     devtools:
         restart:
-            enabled: true
+            enabled: false # springboot热部署。项目自动重新启动
         livereload:
             enabled: false # we use gulp + BrowserSync for livereload
     jackson:
@@ -71,7 +71,8 @@ spring:
             maxRequestSize: 220Mb
 liquibase:
     contexts: dev
-
+    enabled: false
+    drop-first: false
 # ===================================================================
 # To enable SSL, generate a certificate using:
 # keytool -genkey -alias sandman -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -validity 3650

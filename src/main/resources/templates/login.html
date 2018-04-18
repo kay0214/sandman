@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>登录</title>
+</head>
+<body>
+<div >
+    <!-- spring表单标签，用于模型绑定和自动添加隐藏的CSRF token标签 -->
+    <form action="http://localhost:8081/api/sandman/v1/LoginResource/login" method="POST">
+        <h1 >登录</h1>
+　　　　　　　　　　　　　　　　　
+      
+      
+        <input type="text" id="username" name="username"  placeholder="输入帐号" /><br />
+        <input type="password" id="password" name="password"  placeholder="输入密码" /><br />
+        <!-- 是否记住我功能勾选框 -->
+        <input id="rememberMe" name="rememberMe" type="checkbox"/>　　　　　　　　　　　　　　　　
+        <label for="rememberMe">一周内记住我</label>
+        <input type="submit" class="sumbit" value="提交" >
+    </form>
+</div>
+</body>
+</html>

@@ -59,8 +59,8 @@ public class ResourceResourceIntTest {
     private static final String DEFAULT_RES_SIZE = "AAAAAAAAAA";
     private static final String UPDATED_RES_SIZE = "BBBBBBBBBB";
 
-    private static final Integer DEFAULT_RES_TYPE = 1;
-    private static final Integer UPDATED_RES_TYPE = 2;
+    private static final String DEFAULT_RES_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_RES_TYPE = "BBBBBBBBBB";
 
     private static final Integer DEFAULT_DOWN_COUNT = 1;
     private static final Integer UPDATED_DOWN_COUNT = 2;
@@ -203,7 +203,7 @@ public class ResourceResourceIntTest {
             .andExpect(jsonPath("$.[*].resGold").value(hasItem(DEFAULT_RES_GOLD)))
             .andExpect(jsonPath("$.[*].resDesc").value(hasItem(DEFAULT_RES_DESC.toString())))
             .andExpect(jsonPath("$.[*].resSize").value(hasItem(DEFAULT_RES_SIZE.toString())))
-            .andExpect(jsonPath("$.[*].resType").value(hasItem(DEFAULT_RES_TYPE)))
+            .andExpect(jsonPath("$.[*].resType").value(hasItem(DEFAULT_RES_TYPE.toString())))
             .andExpect(jsonPath("$.[*].downCount").value(hasItem(DEFAULT_DOWN_COUNT)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)))
             .andExpect(jsonPath("$.[*].createTime").value(hasItem(DEFAULT_CREATE_TIME.intValue())))
@@ -227,7 +227,7 @@ public class ResourceResourceIntTest {
             .andExpect(jsonPath("$.resGold").value(DEFAULT_RES_GOLD))
             .andExpect(jsonPath("$.resDesc").value(DEFAULT_RES_DESC.toString()))
             .andExpect(jsonPath("$.resSize").value(DEFAULT_RES_SIZE.toString()))
-            .andExpect(jsonPath("$.resType").value(DEFAULT_RES_TYPE))
+            .andExpect(jsonPath("$.resType").value(DEFAULT_RES_TYPE.toString()))
             .andExpect(jsonPath("$.downCount").value(DEFAULT_DOWN_COUNT))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS))
             .andExpect(jsonPath("$.createTime").value(DEFAULT_CREATE_TIME.intValue()))

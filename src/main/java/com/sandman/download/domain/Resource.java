@@ -38,7 +38,7 @@ public class Resource implements Serializable {
     private String resSize;
 
     @Column(name = "res_type")
-    private Integer resType;
+    private String resType;
 
     @Column(name = "down_count")
     private Integer downCount;
@@ -139,16 +139,16 @@ public class Resource implements Serializable {
         this.resSize = resSize;
     }
 
-    public Integer getResType() {
+    public String getResType() {
         return resType;
     }
 
-    public Resource resType(Integer resType) {
+    public Resource resType(String resType) {
         this.resType = resType;
         return this;
     }
 
-    public void setResType(Integer resType) {
+    public void setResType(String resType) {
         this.resType = resType;
     }
 
@@ -235,7 +235,7 @@ public class Resource implements Serializable {
             ", resGold=" + getResGold() +
             ", resDesc='" + getResDesc() + "'" +
             ", resSize='" + getResSize() + "'" +
-            ", resType=" + getResType() +
+            ", resType='" + getResType() + "'" +
             ", downCount=" + getDownCount() +
             ", status=" + getStatus() +
             ", createTime=" + getCreateTime() +

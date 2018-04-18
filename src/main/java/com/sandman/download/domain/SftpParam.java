@@ -34,7 +34,7 @@ public class SftpParam {
         SSH_PORT = sshPort;
     }
     @Value("${sftpServer.prefix}")
-    public static void setPathPrefix(String pathPrefix) {
+    public void setPathPrefix(String pathPrefix) {
         PATH_PREFIX = pathPrefix;
     }
 

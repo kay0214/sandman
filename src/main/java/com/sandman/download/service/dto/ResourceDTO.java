@@ -13,17 +13,17 @@ public class ResourceDTO implements Serializable {
 
     private Long userId;
 
-    private String resName;
+    private String resName;//允许用户修改
 
     private String resUrl;
 
-    private Integer resGold;
+    private Integer resGold;//允许用户修改
 
-    private String resDesc;
+    private String resDesc;//允许用户修改
 
     private String resSize;
 
-    private Integer resType;
+    private String resType;
 
     private Integer downCount;
 
@@ -89,11 +89,11 @@ public class ResourceDTO implements Serializable {
         this.resSize = resSize;
     }
 
-    public Integer getResType() {
+    public String getResType() {
         return resType;
     }
 
-    public void setResType(Integer resType) {
+    public void setResType(String resType) {
         this.resType = resType;
     }
 
@@ -160,7 +160,7 @@ public class ResourceDTO implements Serializable {
             ", resGold=" + getResGold() +
             ", resDesc='" + getResDesc() + "'" +
             ", resSize='" + getResSize() + "'" +
-            ", resType=" + getResType() +
+            ", resType='" + getResType() + "'" +
             ", downCount=" + getDownCount() +
             ", status=" + getStatus() +
             ", createTime=" + getCreateTime() +

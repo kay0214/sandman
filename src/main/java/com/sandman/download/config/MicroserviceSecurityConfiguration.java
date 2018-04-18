@@ -75,12 +75,12 @@ public class MicroserviceSecurityConfiguration extends WebSecurityConfigurerAdap
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
             .authorizeRequests()
-            .antMatchers("/api/**").permitAll()
+            .antMatchers("/api/**").authenticated()
             .antMatchers("/management/health").permitAll()
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/swagger-resources/configuration/ui").permitAll()
         .and()
-/*            .formLogin()
+            .formLogin()
             .loginProcessingUrl("/api/sandman/v1/LoginResource/login")//登录接口
             .failureForwardUrl("/api/sandman/v1/LoginResource/error")//登录失败页面
             .defaultSuccessUrl("/api/sandman/v1/LoginResource/success")//登录成功页面
@@ -88,7 +88,7 @@ public class MicroserviceSecurityConfiguration extends WebSecurityConfigurerAdap
             .logout()
             .logoutUrl("/api/sandman/v1/LoginResource/logout").permitAll()//登出接口
             .logoutSuccessUrl("/api/sandman/v1/LoginResource/logoutSuccess")//登出成功页面
-        .and()*/
+        .and()/**/
             .rememberMe()
             .rememberMeParameter("rememberMe")
             .tokenValiditySeconds(60*60*24*7)//一周时间，记住我功能

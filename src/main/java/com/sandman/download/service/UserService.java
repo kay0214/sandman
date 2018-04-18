@@ -48,6 +48,10 @@ public class UserService {
         user = userRepository.save(user);
         return userMapper.toDto(user);
     }
+    public UserDTO save(User user){
+        user.setUpdateTime(DateUtils.getLongTime());
+        return userMapper.toDto(userRepository.save(user));
+    }
 
     /**
      * Get all the users.
@@ -69,10 +73,9 @@ public class UserService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public UserDTO findOne(Long id) {
+    public User findOne(Long id) {
         log.debug("Request to get User : {}", id);
-        User user = userRepository.findOne(id);
-        return userMapper.toDto(user);
+        return userRepository.findOne(id);
     }
 
     /**

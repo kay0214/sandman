@@ -2,6 +2,7 @@ package com.sandman.download.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.sandman.download.domain.BaseDto;
+import com.sandman.download.domain.User;
 import com.sandman.download.service.UserService;
 import com.sandman.download.web.rest.errors.BadRequestAlertException;
 import com.sandman.download.web.rest.util.HeaderUtil;
@@ -96,10 +97,10 @@ public class UserResource {
      */
     @GetMapping("/users/{id}")
     @Timed
-    public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
         log.debug("REST request to get User : {}", id);
-        UserDTO userDTO = userService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(userDTO));
+        User user = userService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(user));
     }
 
     /**

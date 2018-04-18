@@ -111,6 +111,7 @@ public class FileUtils {
     public static boolean upload(String filePath, String fileName, File file) {
         ChannelSftp sftp = SftpUtils.getSftp();
         mkDirectory(filePath);
+        System.out.println("FileUtils.upload:::filePath=" + filePath + ";fileName=" + fileName);
         try {
 
             sftp.cd(filePath);//cd 到上传路径
@@ -127,10 +128,10 @@ public class FileUtils {
             outstream.close();
             instream.close();
 
-            Vector v = sftp.ls("/var/www/html/spkIMG");
+/*            Vector v = sftp.ls("/var/www/html/spkIMG");
             for (int i = 0; i < v.size(); i++) {
                 System.out.println(v.get(i));
-            }
+            }*/
             SftpUtils.closeSftpCon(sftp);//关闭sftp连接
         } catch (IOException e1) {
             System.out.println(e1);
@@ -148,14 +149,15 @@ public class FileUtils {
      * @Param fileName 服务器文件名
      * @Param response 给用户的输出流
      */
-    public static void download(String filePath, String fileName, HttpServletResponse response) {
+    public static boolean download(String filePath, String fileName, HttpServletResponse response) {
+        //下载方法可能需要改造，因为下载以后无法返回任何网页或者信息
         ChannelSftp sftp = SftpUtils.getSftp();
         byte[] buff = new byte[1024];
         BufferedInputStream bis = null;
         OutputStream os = null;
         try{
 
-            InputStream inputStream = sftp.get(filePath + fileName);
+            InputStream inputStream = sftp.get(filePath + "/" +  fileName);
             os = response.getOutputStream();
             bis = new BufferedInputStream(inputStream);
             int i = bis.read(buff);
@@ -164,27 +166,34 @@ public class FileUtils {
                 os.flush();
                 i = bis.read(buff);
             }
+            //response.sendRedirect("https://www.baidu.com");
+            return true;
+
         }catch (SftpException e) {
-            e.printStackTrace();
+            System.out.println(e);
+            return false;
         }catch (IOException e2){
-            e2.printStackTrace();
+            System.out.println(e2);
+            return false;
         }finally {
             if (bis != null) {
                 try {
+                    SftpUtils.closeSftpCon(sftp);
                     bis.close();
+                    os.close();
                 }catch (IOException e){
-                    e.printStackTrace();
+                    System.out.println(e);
                 }
             }
         }
-        SftpUtils.closeSftpCon(sftp);
+
     }
     /**
      * 在远程服务器上创建文件夹
      * */
     public static void mkDirectory(String filePath){
         ChannelSftp sftp = SftpUtils.getSftp();
-
+        System.out.println("FileUtils.mkDirectory::::filePath=" + filePath);
         try {//首先跳到电脑根目录
             sftp.cd("/");
         }catch (SftpException e){}
@@ -222,5 +231,17 @@ public class FileUtils {
             System.out.println(e);
         }
         return resultFile;
+    }
+    /**
+     * 获取到resUrl中的路径
+     * */
+    public static String getFilePathByUrl(String resUrl){
+        return resUrl.substring(0,resUrl.lastIndexOf("/"));
+    }
+    /**
+     * 根据url获取到文件名
+     * */
+    public static String getFileNameByUrl(String resUrl){
+        return getPrefixByFileName(resUrl.substring(resUrl.lastIndexOf("/")+1));
     }
 }

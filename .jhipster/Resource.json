@@ -28,7 +28,7 @@
         },
         {
             "fieldName": "resType",
-            "fieldType": "Integer"
+            "fieldType": "String"
         },
         {
             "fieldName": "downCount",

@@ -46,7 +46,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="res_type" type="integer">
+            <column name="res_type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
 

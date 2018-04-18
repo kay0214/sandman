@@ -1,9 +1,12 @@
 package com.sandman.download.service;
 
 import com.sandman.download.domain.ResourceRecord;
+import com.sandman.download.domain.User;
 import com.sandman.download.repository.ResourceRecordRepository;
+import com.sandman.download.service.dto.ResourceDTO;
 import com.sandman.download.service.dto.ResourceRecordDTO;
 import com.sandman.download.service.mapper.ResourceRecordMapper;
+import com.sandman.download.web.rest.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -78,5 +81,44 @@ public class ResourceRecordService {
     public void delete(Long id) {
         log.debug("Request to delete ResourceRecord : {}", id);
         resourceRecordRepository.delete(id);
+    }
+
+    /**
+     * 积分增加
+     * */
+    public ResourceRecord addGold(User user, ResourceDTO resourceDTO,int gold,String opDesc){//resourceDTO和gold 二者其一不为null即可
+        ResourceRecord resourceRecord = new ResourceRecord();
+        resourceRecord.setUserId(user.getId());
+        if(resourceDTO!=null){
+            resourceRecord.setResId(resourceDTO.getId());
+            resourceRecord.setResGold(resourceDTO.getResGold());
+            resourceRecord.setCurGold(user.getGold() + resourceDTO.getResGold());
+            resourceRecord.setResName(resourceDTO.getResName());
+        }else{
+            resourceRecord.setCurGold(user.getGold() + gold);
+        }
+        resourceRecord.setOriGold(user.getGold());
+        resourceRecord.setOpDesc(opDesc);
+        resourceRecord.setRecordTime(DateUtils.getLongTime());
+        return resourceRecordRepository.save(resourceRecord);//保存数据
+    }
+    /**
+     * 积分减少
+     * */
+    public ResourceRecord reduceGold(User user, ResourceDTO resourceDTO,int gold,String opDesc){//resourceDTO和gold 二者其一不为null即可
+        ResourceRecord resourceRecord = new ResourceRecord();
+        resourceRecord.setUserId(user.getId());
+        if(resourceDTO!=null){
+            resourceRecord.setResId(resourceDTO.getId());
+            resourceRecord.setResGold(resourceDTO.getResGold());
+            resourceRecord.setCurGold(user.getGold() - resourceDTO.getResGold());
+            resourceRecord.setResName(resourceDTO.getResName());
+        }else{
+            resourceRecord.setCurGold(user.getGold() - gold);
+        }
+        resourceRecord.setOriGold(user.getGold());
+        resourceRecord.setOpDesc(opDesc);
+        resourceRecord.setRecordTime(DateUtils.getLongTime());
+        return resourceRecordRepository.save(resourceRecord);//保存数据
     }
 }

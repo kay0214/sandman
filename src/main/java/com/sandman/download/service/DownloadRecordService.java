@@ -4,6 +4,7 @@ import com.sandman.download.domain.DownloadRecord;
 import com.sandman.download.repository.DownloadRecordRepository;
 import com.sandman.download.service.dto.DownloadRecordDTO;
 import com.sandman.download.service.mapper.DownloadRecordMapper;
+import com.sandman.download.web.rest.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -34,15 +35,18 @@ public class DownloadRecordService {
     /**
      * Save a downloadRecord.
      *
-     * @param downloadRecordDTO the entity to save
      * @return the persisted entity
      */
-    public DownloadRecordDTO save(DownloadRecordDTO downloadRecordDTO) {
-        log.debug("Request to save DownloadRecord : {}", downloadRecordDTO);
+    public DownloadRecordDTO save(Long userId,Long resId) {
+        DownloadRecordDTO downloadRecordDTO = new DownloadRecordDTO();
+        downloadRecordDTO.setUserId(userId);
+        downloadRecordDTO.setResId(resId);
+        downloadRecordDTO.setRecordTime(DateUtils.getLongTime());
         DownloadRecord downloadRecord = downloadRecordMapper.toEntity(downloadRecordDTO);
         downloadRecord = downloadRecordRepository.save(downloadRecord);
         return downloadRecordMapper.toDto(downloadRecord);
     }
+
 
     /**
      * Get all the downloadRecords.

@@ -40,65 +40,26 @@ public class ResourceResource {
     }
 
     /**
-     * POST  /resources : Create a new resource.
-     *
-     * @param resourceDTO the resourceDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new resourceDTO, or with status 400 (Bad Request) if the resource has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PostMapping("/resources")
-    @Timed
-    public ResponseEntity<ResourceDTO> createResource(@RequestBody ResourceDTO resourceDTO) throws URISyntaxException {
-        log.debug("REST request to save Resource : {}", resourceDTO);
-        if (resourceDTO.getId() != null) {
-            throw new BadRequestAlertException("A new resource cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-        ResourceDTO result = resourceService.save(resourceDTO);
-        return ResponseEntity.created(new URI("/api/resources/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
-    }
-
-    /**
      * post : upload file
      * */
     @PostMapping("/uploadResource")
     @Timed
-    public String uploadResource(ResourceDTO resourceDTO,@RequestParam("file")MultipartFile file) throws IOException {
-        if(file.isEmpty()){
-            return "上传的文件为空！";
-        }
-        String fileName = file.getOriginalFilename();
-        String filePath = "C:\\Test\\";
-        String suffixName = FileUtils.getSuffixNameByFileName(fileName);
-        log.info("fileName:{}",fileName);
-        log.info("suffixName:{}",suffixName);
-        log.info("fileSize={}",file.getSize());
-        //File tempFile = FileUtils.getFileByMultipartFile(file); //文件转换必须放到service中，因为转换后。原multiPartFile会删除
-
-        //System.out.println("tempFile fileName:::::::::" + tempFile.getAbsolutePath());
-        resourceService.uploadRes(resourceDTO,file);
-        if(FileUtils.uploadFile(file.getBytes(),filePath,fileName)){
-            return "success!";
-        }else{
-            return "false!";
-        }
+    public BaseDto uploadResource(ResourceDTO resourceDTO,@RequestParam("file")MultipartFile file) throws IOException {
+        log.info("用户上传资源:{}" + file.getOriginalFilename());
+        return resourceService.uploadRes(resourceDTO,file);
     }
+    /**
+     * get : download file
+     * */
     @GetMapping("/downloadResource")
     @Timed
-    public String downloadResource(HttpServletResponse response){
-        String filePath = "http://39.104.80.30/spkIMG/";
-        String fileName = "li.jpg";
-        File file = new File(filePath + fileName);
-        log.info("fileName={}",file.getName());
-
-        response.setHeader("content-type", "application/octet-stream");
-        response.setContentType("application/force-download");// 设置强制下载不打开
-        response.addHeader("Content-Disposition", "attachment;fileName=\"" + FileUtils.getRightFileNameUseCode(fileName) + "\"");// 设置文件名
-        FileUtils.download("/var/www/html/spkIMG/",fileName,response);
-
-
-        return "success";
+    public void downloadResource(Long resId,HttpServletResponse response){
+        log.info("用户下载资源id:{}",resId);
+        try {
+            resourceService.downloadRes(resId, response);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
 
     /**
@@ -110,17 +71,11 @@ public class ResourceResource {
      * or with status 500 (Internal Server Error) if the resourceDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PutMapping("/resources")
+    @PostMapping("/updateResource")
     @Timed
-    public ResponseEntity<ResourceDTO> updateResource(@RequestBody ResourceDTO resourceDTO) throws URISyntaxException {
-        log.debug("REST request to update Resource : {}", resourceDTO);
-        if (resourceDTO.getId() == null) {
-            return createResource(resourceDTO);
-        }
-        ResourceDTO result = resourceService.save(resourceDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, resourceDTO.getId().toString()))
-            .body(result);
+    public BaseDto updateResource(ResourceDTO resourceDTO){
+        log.info("resourceDto:{}",resourceDTO.toString());
+        return resourceService.updateResource(resourceDTO);
     }
 
     /**
@@ -133,7 +88,7 @@ public class ResourceResource {
     public List<ResourceDTO> getAllResources() {
         log.debug("REST request to get all Resources");
         return resourceService.findAll();
-        }
+    }
 
     /**
      * GET  /resources/:id : get the "id" resource.
@@ -162,15 +117,4 @@ public class ResourceResource {
         resourceService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-    /**
-     * post : resource upload method
-     * */
-/*    @PostMapping("/upload")
-    @Timed
-    public BaseDto uploadResource(@RequestBody ResourceDTO resourceDTO,@RequestParam("file")MultipartFile file){
-        log.info("resource upload method:{}",resourceDTO);
-        ResourceDTO result = resourceService.uploadRes(resourceDTO,file);
-        BaseDto baseDto = new BaseDto(200,"上传成功!",result);
-        return baseDto;
-    }*/
 }
