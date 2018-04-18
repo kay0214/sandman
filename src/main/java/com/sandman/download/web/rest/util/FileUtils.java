@@ -150,23 +150,21 @@ public class FileUtils {
      * @Param response 给用户的输出流
      */
     public static boolean download(String filePath, String fileName, HttpServletResponse response) {
-        //下载方法可能需要改造，因为下载以后无法返回任何网页或者信息
+
         ChannelSftp sftp = SftpUtils.getSftp();
         byte[] buff = new byte[1024];
         BufferedInputStream bis = null;
         OutputStream os = null;
         try{
-
             InputStream inputStream = sftp.get(filePath + "/" +  fileName);
             os = response.getOutputStream();
             bis = new BufferedInputStream(inputStream);
             int i = bis.read(buff);
             while (i != -1){
-                os.write(buff, 0, buff.length);
+                os.write(buff,0,i);
                 os.flush();
                 i = bis.read(buff);
             }
-            //response.sendRedirect("https://www.baidu.com");
             return true;
 
         }catch (SftpException e) {
@@ -176,15 +174,22 @@ public class FileUtils {
             System.out.println(e2);
             return false;
         }finally {
-            if (bis != null) {
+            if (bis != null) {//如果BufferedInputStream不为null，就关闭
                 try {
-                    SftpUtils.closeSftpCon(sftp);
                     bis.close();
-                    os.close();
                 }catch (IOException e){
                     System.out.println(e);
                 }
             }
+            if(os != null){//如果OutputStream不为null，就关闭
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    System.out.println(e);
+                }
+            }
+            SftpUtils.closeSftpCon(sftp);//关闭sftp
+
         }
 
     }

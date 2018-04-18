@@ -3,8 +3,6 @@ package com.sandman.download.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.sandman.download.domain.BaseDto;
 import com.sandman.download.service.ResourceService;
-import com.sandman.download.web.rest.errors.BadRequestAlertException;
-import com.sandman.download.web.rest.util.FileUtils;
 import com.sandman.download.web.rest.util.HeaderUtil;
 import com.sandman.download.service.dto.ResourceDTO;
 import io.github.jhipster.web.util.ResponseUtil;
