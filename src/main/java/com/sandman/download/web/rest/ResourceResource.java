@@ -64,7 +64,7 @@ public class ResourceResource {
      * */
     @PostMapping("/uploadResource")
     @Timed
-    public String uploadResource(@RequestParam("file")MultipartFile file) throws IOException {
+    public String uploadResource(ResourceDTO resourceDTO,@RequestParam("file")MultipartFile file) throws IOException {
         if(file.isEmpty()){
             return "上传的文件为空！";
         }
@@ -77,7 +77,7 @@ public class ResourceResource {
         //File tempFile = FileUtils.getFileByMultipartFile(file); //文件转换必须放到service中，因为转换后。原multiPartFile会删除
 
         //System.out.println("tempFile fileName:::::::::" + tempFile.getAbsolutePath());
-        resourceService.uploadRes(new ResourceDTO(),file);
+        resourceService.uploadRes(resourceDTO,file);
         if(FileUtils.uploadFile(file.getBytes(),filePath,fileName)){
             return "success!";
         }else{
@@ -165,12 +165,12 @@ public class ResourceResource {
     /**
      * post : resource upload method
      * */
-    @PostMapping("/upload")
+/*    @PostMapping("/upload")
     @Timed
     public BaseDto uploadResource(@RequestBody ResourceDTO resourceDTO,@RequestParam("file")MultipartFile file){
         log.info("resource upload method:{}",resourceDTO);
         ResourceDTO result = resourceService.uploadRes(resourceDTO,file);
         BaseDto baseDto = new BaseDto(200,"上传成功!",result);
         return baseDto;
-    }
+    }*/
 }

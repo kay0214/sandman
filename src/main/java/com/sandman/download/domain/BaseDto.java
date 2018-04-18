@@ -10,7 +10,11 @@ public class BaseDto {
 
     public BaseDto() {
     }
-
+    public BaseDto(int code,String message){
+        this.code = code;
+        this.message = message;
+        this.data = null;
+    }
     public BaseDto(int code, String message, Object data) {
         this.code = code;
         this.message = message;

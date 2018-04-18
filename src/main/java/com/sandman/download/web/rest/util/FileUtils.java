@@ -52,9 +52,16 @@ public class FileUtils {
     public static String getSuffixNameByFileName(String fileName) {
         if(fileName.contains("."))
             return fileName.substring(fileName.lastIndexOf(".") + 1);
-        return "file";
+        return null;
     }
 
+    /**
+     * 根据文件名获取前缀
+     * */
+    public static String getPrefixByFileName(String fileName){
+        System.out.println("getPrefixByFileName====" + fileName);
+        return fileName.substring(0,fileName.indexOf("."));
+    }
     /**
      * 获取正确的文件名，防止文件名中文乱码，用于设置resName。例如：resName：新建文本文档.txt
      */
@@ -200,13 +207,6 @@ public class FileUtils {
         SftpUtils.closeSftpCon(sftp);
     }
 
-    /**
-     * 获取文件名前缀
-     * */
-    public static String getPrefixByFileName(String fileName){
-        System.out.println("getPrefixByFileName====" + fileName);
-        return fileName.substring(0,fileName.indexOf("."));
-    }
     /**
      * MultipartFile转File
      * */

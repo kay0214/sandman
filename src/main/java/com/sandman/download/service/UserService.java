@@ -84,4 +84,10 @@ public class UserService {
         log.debug("Request to delete User : {}", id);
         userRepository.delete(id);
     }
+    /**
+     * 根据userName获取User信息
+     * */
+    public User findUserByUserName(String userName){
+        return userRepository.findByUserName(userName);
+    }
 }
