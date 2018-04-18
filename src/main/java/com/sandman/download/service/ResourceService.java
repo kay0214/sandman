@@ -168,6 +168,7 @@ public class ResourceService {
         //开始将文件上传到远程服务器
         File tempFile = FileUtils.getFileByMultipartFile(file);//MultiPartFile转File
         boolean uploadSuccess = FileUtils.upload(filePath,fileName,tempFile);//上传服务器
+        tempFile.delete();
         if(!uploadSuccess){//如果上传远程服务器失败
             resourceRepository.delete(resource.getId());//删除资源数据
             uploadRecordService.delete(uploadRecord.getId());//删除日志记录

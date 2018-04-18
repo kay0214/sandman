@@ -60,7 +60,9 @@ public class FileUtils {
      * */
     public static String getPrefixByFileName(String fileName){
         System.out.println("getPrefixByFileName====" + fileName);
-        return fileName.substring(0,fileName.indexOf("."));
+        if(fileName.contains("."))
+            return fileName.substring(0,fileName.indexOf("."));
+        return fileName;
     }
     /**
      * 获取正确的文件名，防止文件名中文乱码，用于设置resName。例如：resName：新建文本文档.txt
