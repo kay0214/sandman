@@ -61,13 +61,7 @@ public class ResourceResource {
     }
 
     /**
-     * PUT  /resources : Updates an existing resource.
-     *
-     * @param resourceDTO the resourceDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated resourceDTO,
-     * or with status 400 (Bad Request) if the resourceDTO is not valid,
-     * or with status 500 (Internal Server Error) if the resourceDTO couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * PUT  /updateResource : Updates an existing resource.
      */
     @PostMapping("/updateResource")
     @Timed
@@ -77,15 +71,16 @@ public class ResourceResource {
     }
 
     /**
-     * GET  /resources : get all the resources.
+     * GET  /getAllMyResources : get all my resources page.
      *
      * @return the ResponseEntity with status 200 (OK) and the list of resources in body
      */
-    @GetMapping("/resources")
+    @GetMapping("/getAllMyResources")
     @Timed
-    public List<ResourceDTO> getAllResources() {
+    public BaseDto getAllMyResources() {
         log.debug("REST request to get all Resources");
-        return resourceService.findAll();
+        //return resourceService.findAll();
+        return null;
     }
 
     /**
