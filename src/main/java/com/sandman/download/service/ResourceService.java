@@ -1,7 +1,10 @@
 package com.sandman.download.service;
 
+import com.sandman.download.common.repository.PageableTools;
+import com.sandman.download.common.repository.SortDto;
 import com.sandman.download.domain.*;
 import com.sandman.download.repository.ResourceRepository;
+import com.sandman.download.repository.myRepository.ResourceRepo;
 import com.sandman.download.security.SecurityUtils;
 import com.sandman.download.service.dto.DownloadRecordDTO;
 import com.sandman.download.service.dto.ResourceDTO;
@@ -14,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,8 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +53,8 @@ public class ResourceService {
     private ResourceRecordService resourceRecordService;
     @Autowired
     private DownloadRecordService downloadRecordService;
+    @Autowired
+    private ResourceRepo resourceRepo;
 
     public ResourceService(ResourceRepository resourceRepository, ResourceMapper resourceMapper) {
         this.resourceRepository = resourceRepository;
@@ -53,88 +62,23 @@ public class ResourceService {
     }
 
     /**
-     * Save a resource.
-     *
-     * @param resourceDTO the entity to save
-     * @return the persisted entity
-     */
-    public ResourceDTO save(ResourceDTO resourceDTO) {
-        log.debug("Request to save Resource : {}", resourceDTO);
-        Resource resource = resourceMapper.toEntity(resourceDTO);
-        resource = resourceRepository.save(resource);
-        return resourceMapper.toDto(resource);
-    }
-    /**
-     * update a resource
-     * */
-    public BaseDto updateResource(ResourceDTO resourceDTO){
-        log.info("update a resource:{}",resourceDTO.getId());
-        Resource oriResource = resourceRepository.findOne(resourceDTO.getId());
-
-        String resName = resourceDTO.getResName();
-        if(resName!=null && !"".equals(resName)){
-            oriResource.setResName(resName);
-        }
-        String resDesc = resourceDTO.getResDesc();
-        if(resDesc!=null && !"".equals(resDesc)){
-            oriResource.setResDesc(resDesc);
-        }
-        oriResource.setResGold(resourceDTO.getResGold());
-
-        Resource resource = resourceRepository.save(oriResource);
-        return new BaseDto(200,"更新成功!",resourceMapper.toDto(resource));
-    }
-
-    /**
-     * Get all the resources.
-     *
-     * @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public List<ResourceDTO> findAll() {
-        log.debug("Request to get all Resources");
-        return resourceRepository.findAll().stream()
-            .map(resourceMapper::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
-    }
-
-    /**
-     * Get one resource by id.
-     *
-     * @param id the id of the entity
-     * @return the entity
-     */
-    @Transactional(readOnly = true)
-    public ResourceDTO findOne(Long id) {
-        log.debug("Request to get Resource : {}", id);
-        Resource resource = resourceRepository.findOne(id);
-        return resourceMapper.toDto(resource);
-    }
-
-    /**
-     * Delete the resource by id.
-     *
-     * @param id the id of the entity
-     */
-    public void delete(Long id) {
-        log.debug("Request to delete Resource : {}", id);
-        resourceRepository.delete(id);
-    }
-    /**
      * upload resource
      * */
-    public BaseDto uploadRes(ResourceDTO resourceDTO, MultipartFile file){
+    public BaseDto uploadRes(ResourceDTO resourceDTO, MultipartFile file){//上传不用修改USER表，所以直接拿过来登录信息就可以了
         if(file.isEmpty()){
             return new BaseDto(401,"上传文件为空!");
         }
         //开始做用户资源记录
-        User user = userService.findUserByUserName(SecurityUtils.getCurrentUserLogin().get());//根据userName查询user信息
+        //User user = userService.findUserByUserName(SecurityUtils.getCurrentUserLogin().get());//根据userName查询user信息
 
-        resourceDTO.setUserId(user.getId());//设置UserId给resource
+        Long userId = SecurityUtils.getCurrentUserId();//登录的时候保存的信息，不用再次查询数据库
+
+        resourceDTO.setUserId(userId);//设置UserId给resource
+        resourceDTO.setOwnerName(SecurityUtils.getCurrentUserName());//设置资源所属用户
 
         String fileType = FileUtils.getSuffixNameByFileName(file.getOriginalFilename());
         fileType = (fileType==null || "".equals(fileType))?"file":fileType;//如果utils给出的文件类型为null，将file赋值给fileType
-        String filePath = SftpParam.getPathPrefix() + "/" + fileType + "/" + user.getId() + "/";//  /var/www/html/spkIMG + / + rar + / + userId + /
+        String filePath = SftpParam.getPathPrefix() + "/" + fileType + "/" + userId + "/";//  /var/www/html/spkIMG + / + rar + / + userId + /
 
         String resName = resourceDTO.getResName();
         log.info("用户传入的resName:{}",resName);
@@ -150,7 +94,7 @@ public class ResourceService {
         log.info("resUrl={}",resourceDTO.getResUrl());
         //resourceDTO.setResGold(0);//用户填写的 下载资源所需积分
         //resourceDTO.setResDesc("");//用户填写的资源描述
-        resourceDTO.setResSize(FileUtils.getFileSize(file.getSize()));//获取文件大小，四舍五入保留两位小数
+        resourceDTO.setResSize(String.valueOf(file.getSize()));//获取文件大小，存的时候不做操作，取得时候四舍五入带单位
 
         resourceDTO.setResType(fileType);
         resourceDTO.setDownCount(0);//设置默认下载数为0，因为是刚上传
@@ -161,7 +105,7 @@ public class ResourceService {
         //开始做用户上传日志记录
         UploadRecordDTO uploadRecordDTO = new UploadRecordDTO();
         uploadRecordDTO.setResId(resource.getId());//资源id
-        uploadRecordDTO.setUserId(user.getId());//用户id
+        uploadRecordDTO.setUserId(userId);//用户id
         uploadRecordDTO.setRecordTime(DateUtils.getLongTime());//记录时间
 
         UploadRecordDTO uploadRecord = uploadRecordService.save(uploadRecordDTO);//得到保存后的数据,带id
@@ -180,7 +124,7 @@ public class ResourceService {
     /**
      * download resource
      * */
-    public void downloadRes(Long resId,HttpServletResponse response)throws IOException{
+    public void downloadRes(Long resId,HttpServletResponse response)throws IOException{//下载需要修改USER表，需要再次去数据库查询
         ResourceDTO resourceDTO = resourceMapper.toDto(resourceRepository.findOne(resId));//根据ID查询出来整条resource
         String resName = FileUtils.getFileNameByUrl(resourceDTO.getResUrl());//根据url获取到文件名前缀，不带扩展名
         String fileName = ("file".equals(resourceDTO.getResType()))?resName:(resName + "." + resourceDTO.getResType());
@@ -238,5 +182,101 @@ public class ResourceService {
             }
         }
 
+    }
+    /**
+     * update a resource
+     * */
+    public BaseDto updateResource(ResourceDTO resourceDTO){//更新一个resource
+        log.info("update a resource:{}",resourceDTO.getId());
+        Resource oriResource = resourceRepository.findOne(resourceDTO.getId());
+        Long resOwnerId = oriResource.getUserId();
+        if(!resOwnerId.equals(SecurityUtils.getCurrentUserId())){
+            return new BaseDto(405,"无权修改!");
+        }
+
+        String resName = resourceDTO.getResName();
+        if(resName!=null && !"".equals(resName)){
+            oriResource.setResName(resName);
+        }
+        String resDesc = resourceDTO.getResDesc();
+        if(resDesc!=null && !"".equals(resDesc)){
+            oriResource.setResDesc(resDesc);
+        }
+        oriResource.setResGold(resourceDTO.getResGold());
+
+        Resource resource = resourceRepository.save(oriResource);
+
+        //ResourceDTO resource = getOneResource(resourceDTO.getId());
+
+        return new BaseDto(200,"更新成功!",resource);
+    }
+
+    /**
+     * Get all my resources.
+     *
+     * @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Map getAllMyResources(Integer pageNumber,Integer size,Long userId,String sortType,String order) {
+        log.debug("getAllMyResources page:{},size:{},order:{}",pageNumber,size,order);
+        userId = (userId==null)?SecurityUtils.getCurrentUserId():userId;
+        pageNumber = (pageNumber==null || pageNumber<1)?1:pageNumber;
+        size = (size==null || size<0)?10:size;
+        if(sortType==null || "".equals(sortType) || (!"ASC".equals(sortType.toUpperCase()) && !"DESC".equals(sortType.toUpperCase()))){
+            sortType = "DESC";
+        }
+        order = (order==null || "".equals(order) || "null".equals(order))?"createTime":order;
+        Pageable pageable = PageableTools.basicPage(pageNumber,size,new SortDto(sortType,order));//第一页就传page=1
+        Page allResources = resourceRepo.findByUserId(userId,pageable);
+
+        Map data = new HashMap();//最终返回的map
+
+        data.put("totalRow",allResources.getTotalElements());
+        data.put("totalPage",allResources.getTotalPages());
+        data.put("currentPage",allResources.getNumber()+1);//默认0就是第一页
+        data.put("resourceList",getFileSizeHaveUnit(allResources.getContent()));
+        return data;
+        //return new BaseDto(200,"查询成功!",data);
+    }
+    /**
+     * 资源大小：存入数据库的时候统一以byte为单位，取出来给前端的时候要做规范 -> 转换成以 B,KB,MB,GB为单位
+     * */
+    public static List getFileSizeHaveUnit(List<Resource> resourceList){
+        resourceList.forEach(resource -> {
+            String size = resource.getResSize();
+            resource.setResSize(FileUtils.getFileSize(Long.parseLong(size)));
+        });
+        return resourceList;
+    }
+
+    /**
+     * Get one resource by id.
+     */
+    @Transactional(readOnly = true)
+    public ResourceDTO getOneResource(Long id) {
+        log.debug("Request to get Resource : {}", id);
+        Resource resource = resourceRepository.getOneResourceById(id);
+        if(resource==null)
+            return null;
+        Long fileSize = Long.parseLong(resource.getResSize());
+        resource.setResSize(FileUtils.getFileSize(fileSize));
+        return resourceMapper.toDto(resource);
+        //return new BaseDto(200,"查询成功!",resourceDTO);
+    }
+
+    /**
+     * Delete the resource by id.
+     */
+    public BaseDto delResource(Long id) {
+        log.debug("Request to delete Resource : {}", id);
+        Resource tempRes = resourceRepository.findOne(id);
+        if(!tempRes.getUserId().equals(SecurityUtils.getCurrentUserId())){
+            return new BaseDto(406,"无权删除!");
+        }
+        Integer success = resourceRepository.delResourceById(id);
+        if(success==1){
+            return new BaseDto(200,"删除成功!");
+        }
+        return new BaseDto(407,"删除失败!");
     }
 }

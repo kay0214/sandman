@@ -2,6 +2,7 @@ package com.sandman.download.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.sandman.download.domain.BaseDto;
+import com.sandman.download.security.SecurityUtils;
 import com.sandman.download.service.ResourceService;
 import com.sandman.download.web.rest.util.HeaderUtil;
 import com.sandman.download.service.dto.ResourceDTO;
@@ -18,6 +19,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -51,17 +53,17 @@ public class ResourceResource {
      * */
     @GetMapping("/downloadResource")
     @Timed
-    public void downloadResource(Long resId,HttpServletResponse response){
-        log.info("用户下载资源id:{}",resId);
+    public void downloadResource(Long id,HttpServletResponse response){
+        log.info("用户下载资源id:{}",id);
         try {
-            resourceService.downloadRes(resId, response);
+            resourceService.downloadRes(id, response);
         } catch (IOException e) {
             System.out.println(e);
         }
     }
 
     /**
-     * PUT  /updateResource : Updates an existing resource.
+     * post Updates an existing resource.
      */
     @PostMapping("/updateResource")
     @Timed
@@ -71,43 +73,34 @@ public class ResourceResource {
     }
 
     /**
-     * GET  /getAllMyResources : get all my resources page.
-     *
-     * @return the ResponseEntity with status 200 (OK) and the list of resources in body
+     * GET : get all my resources page.
      */
     @GetMapping("/getAllMyResources")
     @Timed
-    public BaseDto getAllMyResources() {
-        log.debug("REST request to get all Resources");
-        //return resourceService.findAll();
-        return null;
+    public BaseDto getAllMyResources(Integer pageNumber,Integer size,Long userId,String sortType,String order) {
+        log.info("pageNumber：{}，size：{}，userId：{}，sortType：{}，order：{}",pageNumber, size, userId, sortType, order);
+        Map data = resourceService.getAllMyResources(pageNumber, size, userId, sortType, order);
+        return new BaseDto(200,"查询成功!",data);
     }
 
     /**
-     * GET  /resources/:id : get the "id" resource.
-     *
-     * @param id the id of the resourceDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the resourceDTO, or with status 404 (Not Found)
+     * GET : get one resource
      */
-    @GetMapping("/resources/{id}")
+    @GetMapping("/getOneResource")
     @Timed
-    public ResponseEntity<ResourceDTO> getResource(@PathVariable Long id) {
-        log.debug("REST request to get Resource : {}", id);
-        ResourceDTO resourceDTO = resourceService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(resourceDTO));
+    public BaseDto getOneResource(Long id) {
+        log.debug("REST request to get one Resource : {}", id);
+        ResourceDTO resourceDTO = resourceService.getOneResource(id);
+        return new BaseDto(200,"查询成功!",resourceDTO);
     }
 
     /**
-     * DELETE  /resources/:id : delete the "id" resource.
-     *
-     * @param id the id of the resourceDTO to delete
-     * @return the ResponseEntity with status 200 (OK)
+     * DELETE : delete the "id" resource.
      */
-    @DeleteMapping("/resources/{id}")
+    @GetMapping("/delResource")
     @Timed
-    public ResponseEntity<Void> deleteResource(@PathVariable Long id) {
+    public BaseDto delResource(Long id) {
         log.debug("REST request to delete Resource : {}", id);
-        resourceService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        return resourceService.delResource(id);
     }
 }

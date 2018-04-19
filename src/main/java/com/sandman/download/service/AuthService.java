@@ -2,6 +2,7 @@ package com.sandman.download.service;
 
 import com.sandman.download.domain.User;
 import com.sandman.download.repository.UserRepository;
+import com.sandman.download.security.CurrentUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,12 @@ public class AuthService implements UserDetailsService {
 
         List<GrantedAuthority> authorityList = new ArrayList<>();
         authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
-        org.springframework.security.core.userdetails.User userAndAuth = new org.springframework.security.core.userdetails.User(user.getUserName(),user.getPassword(),authorityList);
+        CurrentUser userAndAuth = new CurrentUser(user.getUserName(),user.getPassword(),authorityList);
+        userAndAuth.setUserName(user.getUserName());
+        userAndAuth.setId(user.getId());
+        userAndAuth.setMobile(user.getMobile());
+        userAndAuth.setEmail(user.getEmail());
+        userAndAuth.setGold(user.getGold());
         return userAndAuth;
     }
     //用户权限

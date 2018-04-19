@@ -22,6 +22,9 @@ public class Resource implements Serializable {
     @Column(name = "user_id")
     private Long userId;
 
+    @Column(name = "owner_name")
+    private String ownerName;
+
     @Column(name = "res_name")
     private String resName;
 
@@ -72,6 +75,19 @@ public class Resource implements Serializable {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public Resource ownerName(String ownerName) {
+        this.ownerName = ownerName;
+        return this;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
     }
 
     public String getResName() {
@@ -230,6 +246,7 @@ public class Resource implements Serializable {
         return "Resource{" +
             "id=" + getId() +
             ", userId=" + getUserId() +
+            ",ownerName=" + getOwnerName() +
             ", resName='" + getResName() + "'" +
             ", resUrl='" + getResUrl() + "'" +
             ", resGold=" + getResGold() +

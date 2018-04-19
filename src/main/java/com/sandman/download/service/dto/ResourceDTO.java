@@ -1,6 +1,8 @@
 package com.sandman.download.service.dto;
 
 
+import com.sandman.download.domain.User;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -32,6 +34,8 @@ public class ResourceDTO implements Serializable {
     private Long createTime;
 
     private Long updateTime;
+
+    private String ownerName;
 
     public Long getId() {
         return id;
@@ -129,6 +133,14 @@ public class ResourceDTO implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -165,6 +177,7 @@ public class ResourceDTO implements Serializable {
             ", status=" + getStatus() +
             ", createTime=" + getCreateTime() +
             ", updateTime=" + getUpdateTime() +
+            ", ownerName=" + getOwnerName() +
             "}";
     }
 }
