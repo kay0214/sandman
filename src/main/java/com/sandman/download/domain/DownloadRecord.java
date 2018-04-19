@@ -22,11 +22,12 @@ public class DownloadRecord implements Serializable {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "res_id")
-    private Long resId;
-
     @Column(name = "record_time")
     private Long recordTime;
+
+    @OneToOne
+    @JoinColumn(unique = true)
+    private Resource res;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -50,19 +51,6 @@ public class DownloadRecord implements Serializable {
         this.userId = userId;
     }
 
-    public Long getResId() {
-        return resId;
-    }
-
-    public DownloadRecord resId(Long resId) {
-        this.resId = resId;
-        return this;
-    }
-
-    public void setResId(Long resId) {
-        this.resId = resId;
-    }
-
     public Long getRecordTime() {
         return recordTime;
     }
@@ -74,6 +62,19 @@ public class DownloadRecord implements Serializable {
 
     public void setRecordTime(Long recordTime) {
         this.recordTime = recordTime;
+    }
+
+    public Resource getRes() {
+        return res;
+    }
+
+    public DownloadRecord res(Resource resource) {
+        this.res = resource;
+        return this;
+    }
+
+    public void setRes(Resource resource) {
+        this.res = resource;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -102,7 +103,6 @@ public class DownloadRecord implements Serializable {
         return "DownloadRecord{" +
             "id=" + getId() +
             ", userId=" + getUserId() +
-            ", resId=" + getResId() +
             ", recordTime=" + getRecordTime() +
             "}";
     }

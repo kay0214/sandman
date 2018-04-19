@@ -2,6 +2,8 @@ package com.sandman.download.service.dto;
 
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -13,9 +15,9 @@ public class UploadRecordDTO implements Serializable {
 
     private Long userId;
 
-    private Long resId;
-
     private Long recordTime;
+
+    private Long resId;
 
     public Long getId() {
         return id;
@@ -33,20 +35,20 @@ public class UploadRecordDTO implements Serializable {
         this.userId = userId;
     }
 
-    public Long getResId() {
-        return resId;
-    }
-
-    public void setResId(Long resId) {
-        this.resId = resId;
-    }
-
     public Long getRecordTime() {
         return recordTime;
     }
 
     public void setRecordTime(Long recordTime) {
         this.recordTime = recordTime;
+    }
+
+    public Long getResId() {
+        return resId;
+    }
+
+    public void setResId(Long resourceId) {
+        this.resId = resourceId;
     }
 
     @Override
@@ -75,7 +77,6 @@ public class UploadRecordDTO implements Serializable {
         return "UploadRecordDTO{" +
             "id=" + getId() +
             ", userId=" + getUserId() +
-            ", resId=" + getResId() +
             ", recordTime=" + getRecordTime() +
             "}";
     }

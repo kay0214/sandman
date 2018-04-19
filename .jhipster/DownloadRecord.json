@@ -1,13 +1,18 @@
 {
     "fluentMethods": true,
-    "relationships": [],
+    "relationships": [
+        {
+            "relationshipName": "res",
+            "otherEntityName": "resource",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "downloadRecord"
+        }
+    ],
     "fields": [
         {
             "fieldName": "userId",
-            "fieldType": "Long"
-        },
-        {
-            "fieldName": "resId",
             "fieldType": "Long"
         },
         {

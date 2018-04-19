@@ -53,13 +53,16 @@ public class ResourceResource {
      * */
     @GetMapping("/downloadResource")
     @Timed
-    public void downloadResource(Long id,HttpServletResponse response){
+    public BaseDto downloadResource(Long id,HttpServletResponse response){
         log.info("用户下载资源id:{}",id);
+        BaseDto baseDto = null;
+
         try {
-            resourceService.downloadRes(id, response);
-        } catch (IOException e) {
-            System.out.println(e);
+            baseDto = resourceService.downloadRes(id, response);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return baseDto;
     }
 
     /**

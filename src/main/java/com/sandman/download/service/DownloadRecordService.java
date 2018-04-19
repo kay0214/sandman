@@ -1,17 +1,26 @@
 package com.sandman.download.service;
 
+import com.sandman.download.common.repository.PageableTools;
+import com.sandman.download.common.repository.SortDto;
 import com.sandman.download.domain.DownloadRecord;
+import com.sandman.download.domain.UploadRecord;
 import com.sandman.download.repository.DownloadRecordRepository;
 import com.sandman.download.service.dto.DownloadRecordDTO;
 import com.sandman.download.service.mapper.DownloadRecordMapper;
 import com.sandman.download.web.rest.util.DateUtils;
+import com.sandman.download.web.rest.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -34,8 +43,6 @@ public class DownloadRecordService {
 
     /**
      * Save a downloadRecord.
-     *
-     * @return the persisted entity
      */
     public DownloadRecordDTO save(Long userId,Long resId) {
         DownloadRecordDTO downloadRecordDTO = new DownloadRecordDTO();
@@ -47,40 +54,53 @@ public class DownloadRecordService {
         return downloadRecordMapper.toDto(downloadRecord);
     }
 
-
     /**
      * Get all the downloadRecords.
      *
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<DownloadRecordDTO> findAll() {
+    public Map getAllDownloadRecords(Integer pageNumber, Integer size) {
         log.debug("Request to get all DownloadRecords");
-        return downloadRecordRepository.findAll().stream()
-            .map(downloadRecordMapper::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
-    }
+        pageNumber = (pageNumber==null || pageNumber<1)?1:pageNumber;
+        size = (size==null || size<0)?10:size;
+        Pageable pageable = PageableTools.basicPage(pageNumber,size,new SortDto("desc","recordTime"));
+        Page downloadRecordPage = downloadRecordRepository.findAll(pageable);
+        List<DownloadRecord> downloadRecordList = downloadRecordPage.getContent();
+        downloadRecordList.forEach(downloadRecord -> {
+            System.out.println(downloadRecord.getRes().getResSize());
+        });
+        Map data = new HashMap();
+        data.put("totalRow",downloadRecordPage.getTotalElements());
+        data.put("totalPage",downloadRecordPage.getTotalPages());
+        data.put("currentPage",downloadRecordPage.getNumber()+1);//默认0就是第一页
+        data.put("resourceList",getFileSizeHaveUnit(downloadRecordList));
 
+        return data;
+    }
     /**
-     * Get one downloadRecord by id.
-     *
-     * @param id the id of the entity
-     * @return the entity
-     */
-    @Transactional(readOnly = true)
-    public DownloadRecordDTO findOne(Long id) {
-        log.debug("Request to get DownloadRecord : {}", id);
-        DownloadRecord downloadRecord = downloadRecordRepository.findOne(id);
-        return downloadRecordMapper.toDto(downloadRecord);
-    }
+     * 资源大小：存入数据库的时候统一以byte为单位，取出来给前端的时候要做规范 -> 转换成以 B,KB,MB,GB为单位
+     * */
+    public List getFileSizeHaveUnit(List<DownloadRecord> resourceList){
 
+        for(DownloadRecord downloadRecord:resourceList){
+            String size = new String(downloadRecord.getRes().getResSize());
+            System.out.println("getFileSizeHaveUnit--size::::" + size);
+            downloadRecord.getRes().setResSize(FileUtils.getFileSize(Long.parseLong(size)));
+        }
+/*        resourceList.forEach(resource -> {
+            String size = resource.getRes().getResSize();
+            System.out.println("getFileSizeHaveUnit--size::::" + size);
+            resource.getRes().setResSize(FileUtils.getFileSize(Long.parseLong(size)));
+            size = null;
+        });*/
+        return resourceList;
+    }
     /**
      * Delete the downloadRecord by id.
-     *
-     * @param id the id of the entity
      */
     public void delete(Long id) {
-        log.debug("Request to delete DownloadRecord : {}", id);
+        log.debug("Request to delete UploadRecord : {}", id);
         downloadRecordRepository.delete(id);
     }
 }

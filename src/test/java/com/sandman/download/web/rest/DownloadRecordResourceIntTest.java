@@ -44,9 +44,6 @@ public class DownloadRecordResourceIntTest {
     private static final Long DEFAULT_USER_ID = 1L;
     private static final Long UPDATED_USER_ID = 2L;
 
-    private static final Long DEFAULT_RES_ID = 1L;
-    private static final Long UPDATED_RES_ID = 2L;
-
     private static final Long DEFAULT_RECORD_TIME = 1L;
     private static final Long UPDATED_RECORD_TIME = 2L;
 
@@ -95,7 +92,6 @@ public class DownloadRecordResourceIntTest {
     public static DownloadRecord createEntity(EntityManager em) {
         DownloadRecord downloadRecord = new DownloadRecord()
             .userId(DEFAULT_USER_ID)
-            .resId(DEFAULT_RES_ID)
             .recordTime(DEFAULT_RECORD_TIME);
         return downloadRecord;
     }
@@ -122,7 +118,6 @@ public class DownloadRecordResourceIntTest {
         assertThat(downloadRecordList).hasSize(databaseSizeBeforeCreate + 1);
         DownloadRecord testDownloadRecord = downloadRecordList.get(downloadRecordList.size() - 1);
         assertThat(testDownloadRecord.getUserId()).isEqualTo(DEFAULT_USER_ID);
-        assertThat(testDownloadRecord.getResId()).isEqualTo(DEFAULT_RES_ID);
         assertThat(testDownloadRecord.getRecordTime()).isEqualTo(DEFAULT_RECORD_TIME);
     }
 
@@ -158,7 +153,6 @@ public class DownloadRecordResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(downloadRecord.getId().intValue())))
             .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID.intValue())))
-            .andExpect(jsonPath("$.[*].resId").value(hasItem(DEFAULT_RES_ID.intValue())))
             .andExpect(jsonPath("$.[*].recordTime").value(hasItem(DEFAULT_RECORD_TIME.intValue())));
     }
 
@@ -174,7 +168,6 @@ public class DownloadRecordResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(downloadRecord.getId().intValue()))
             .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID.intValue()))
-            .andExpect(jsonPath("$.resId").value(DEFAULT_RES_ID.intValue()))
             .andExpect(jsonPath("$.recordTime").value(DEFAULT_RECORD_TIME.intValue()));
     }
 
@@ -199,7 +192,6 @@ public class DownloadRecordResourceIntTest {
         em.detach(updatedDownloadRecord);
         updatedDownloadRecord
             .userId(UPDATED_USER_ID)
-            .resId(UPDATED_RES_ID)
             .recordTime(UPDATED_RECORD_TIME);
         DownloadRecordDTO downloadRecordDTO = downloadRecordMapper.toDto(updatedDownloadRecord);
 
@@ -213,7 +205,6 @@ public class DownloadRecordResourceIntTest {
         assertThat(downloadRecordList).hasSize(databaseSizeBeforeUpdate);
         DownloadRecord testDownloadRecord = downloadRecordList.get(downloadRecordList.size() - 1);
         assertThat(testDownloadRecord.getUserId()).isEqualTo(UPDATED_USER_ID);
-        assertThat(testDownloadRecord.getResId()).isEqualTo(UPDATED_RES_ID);
         assertThat(testDownloadRecord.getRecordTime()).isEqualTo(UPDATED_RECORD_TIME);
     }
 

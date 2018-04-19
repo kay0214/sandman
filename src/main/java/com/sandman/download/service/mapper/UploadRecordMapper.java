@@ -8,10 +8,14 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity UploadRecord and its DTO UploadRecordDTO.
  */
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", uses = {ResourceMapper.class})
 public interface UploadRecordMapper extends EntityMapper<UploadRecordDTO, UploadRecord> {
 
+    @Mapping(source = "res.id", target = "resId")
+    UploadRecordDTO toDto(UploadRecord uploadRecord);
 
+    @Mapping(source = "resId", target = "res")
+    UploadRecord toEntity(UploadRecordDTO uploadRecordDTO);
 
     default UploadRecord fromId(Long id) {
         if (id == null) {

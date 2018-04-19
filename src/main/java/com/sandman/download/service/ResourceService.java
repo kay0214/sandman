@@ -124,8 +124,13 @@ public class ResourceService {
     /**
      * download resource
      * */
-    public void downloadRes(Long resId,HttpServletResponse response)throws IOException{//下载需要修改USER表，需要再次去数据库查询
-        ResourceDTO resourceDTO = resourceMapper.toDto(resourceRepository.findOne(resId));//根据ID查询出来整条resource
+    public BaseDto downloadRes(Long resId,HttpServletResponse response)throws Exception{//下载需要修改USER表，需要再次去数据库查询
+        Resource resource = resourceRepository.findOne(resId);
+        if(resource==null){
+            return new BaseDto(408,"资源不存在!");
+        }
+        ResourceDTO resourceDTO = resourceMapper.toDto(resource);//根据ID查询出来整条resource
+
         String resName = FileUtils.getFileNameByUrl(resourceDTO.getResUrl());//根据url获取到文件名前缀，不带扩展名
         String fileName = ("file".equals(resourceDTO.getResType()))?resName:(resName + "." + resourceDTO.getResType());
         log.info("resource:{}",resourceDTO.toString());
@@ -139,7 +144,7 @@ public class ResourceService {
             int curUserGold = curUser.getGold();//当前用户积分
             int resGold = resourceDTO.getResGold();//资源积分
             if(curUserGold<resGold)
-                response.sendError(403,"积分不足!");
+                return new BaseDto(403,"积分不足!");
 
 
             //下载者写入积分详情
@@ -169,7 +174,7 @@ public class ResourceService {
                 resourceRecordService.delete(curUserRecord.getId());//删除下载者积分记录
                 resourceRecordService.delete(ownerRecord.getId());//删除资源拥有者积分记录
                 downloadRecordService.delete(downloadRecordDTO.getId());//删除下载记录
-                response.sendError(404,"下载出错!");
+                return new BaseDto(404,"下载出错!");
             }
         }else{//下载与登录为同一个人
             log.info("上传下载同一人");
@@ -178,10 +183,10 @@ public class ResourceService {
             response.addHeader("Content-Disposition", "attachment;fileName=\"" + FileUtils.getRightFileNameUseCode(fileName) + "\"");// 设置文件名
             boolean success = FileUtils.download(FileUtils.getFilePathByUrl(resourceDTO.getResUrl()),fileName,response);
             if(!success){
-                response.sendError(404,"下载出错!");
+                return new BaseDto(404,"下载出错!");
             }
         }
-
+        return new BaseDto(200,"下载已完成!");
     }
     /**
      * update a resource
@@ -242,10 +247,14 @@ public class ResourceService {
      * 资源大小：存入数据库的时候统一以byte为单位，取出来给前端的时候要做规范 -> 转换成以 B,KB,MB,GB为单位
      * */
     public static List getFileSizeHaveUnit(List<Resource> resourceList){
-        resourceList.forEach(resource -> {
+        for(Resource resource:resourceList){
             String size = resource.getResSize();
             resource.setResSize(FileUtils.getFileSize(Long.parseLong(size)));
-        });
+        }
+/*        resourceList.forEach(resource -> {
+            String size = resource.getResSize();
+            resource.setResSize(FileUtils.getFileSize(Long.parseLong(size)));
+        });*/
         return resourceList;
     }
 
@@ -270,6 +279,9 @@ public class ResourceService {
     public BaseDto delResource(Long id) {
         log.debug("Request to delete Resource : {}", id);
         Resource tempRes = resourceRepository.findOne(id);
+        if(tempRes==null){
+            return new BaseDto(408,"资源不存在!");
+        }
         if(!tempRes.getUserId().equals(SecurityUtils.getCurrentUserId())){
             return new BaseDto(406,"无权删除!");
         }

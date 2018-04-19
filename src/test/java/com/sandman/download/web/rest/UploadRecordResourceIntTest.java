@@ -44,9 +44,6 @@ public class UploadRecordResourceIntTest {
     private static final Long DEFAULT_USER_ID = 1L;
     private static final Long UPDATED_USER_ID = 2L;
 
-    private static final Long DEFAULT_RES_ID = 1L;
-    private static final Long UPDATED_RES_ID = 2L;
-
     private static final Long DEFAULT_RECORD_TIME = 1L;
     private static final Long UPDATED_RECORD_TIME = 2L;
 
@@ -95,7 +92,6 @@ public class UploadRecordResourceIntTest {
     public static UploadRecord createEntity(EntityManager em) {
         UploadRecord uploadRecord = new UploadRecord()
             .userId(DEFAULT_USER_ID)
-            .resId(DEFAULT_RES_ID)
             .recordTime(DEFAULT_RECORD_TIME);
         return uploadRecord;
     }
@@ -122,7 +118,6 @@ public class UploadRecordResourceIntTest {
         assertThat(uploadRecordList).hasSize(databaseSizeBeforeCreate + 1);
         UploadRecord testUploadRecord = uploadRecordList.get(uploadRecordList.size() - 1);
         assertThat(testUploadRecord.getUserId()).isEqualTo(DEFAULT_USER_ID);
-        assertThat(testUploadRecord.getResId()).isEqualTo(DEFAULT_RES_ID);
         assertThat(testUploadRecord.getRecordTime()).isEqualTo(DEFAULT_RECORD_TIME);
     }
 
@@ -158,7 +153,6 @@ public class UploadRecordResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(uploadRecord.getId().intValue())))
             .andExpect(jsonPath("$.[*].userId").value(hasItem(DEFAULT_USER_ID.intValue())))
-            .andExpect(jsonPath("$.[*].resId").value(hasItem(DEFAULT_RES_ID.intValue())))
             .andExpect(jsonPath("$.[*].recordTime").value(hasItem(DEFAULT_RECORD_TIME.intValue())));
     }
 
@@ -174,7 +168,6 @@ public class UploadRecordResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(uploadRecord.getId().intValue()))
             .andExpect(jsonPath("$.userId").value(DEFAULT_USER_ID.intValue()))
-            .andExpect(jsonPath("$.resId").value(DEFAULT_RES_ID.intValue()))
             .andExpect(jsonPath("$.recordTime").value(DEFAULT_RECORD_TIME.intValue()));
     }
 
@@ -199,7 +192,6 @@ public class UploadRecordResourceIntTest {
         em.detach(updatedUploadRecord);
         updatedUploadRecord
             .userId(UPDATED_USER_ID)
-            .resId(UPDATED_RES_ID)
             .recordTime(UPDATED_RECORD_TIME);
         UploadRecordDTO uploadRecordDTO = uploadRecordMapper.toDto(updatedUploadRecord);
 
@@ -213,7 +205,6 @@ public class UploadRecordResourceIntTest {
         assertThat(uploadRecordList).hasSize(databaseSizeBeforeUpdate);
         UploadRecord testUploadRecord = uploadRecordList.get(uploadRecordList.size() - 1);
         assertThat(testUploadRecord.getUserId()).isEqualTo(UPDATED_USER_ID);
-        assertThat(testUploadRecord.getResId()).isEqualTo(UPDATED_RES_ID);
         assertThat(testUploadRecord.getRecordTime()).isEqualTo(UPDATED_RECORD_TIME);
     }
 

@@ -8,10 +8,14 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity DownloadRecord and its DTO DownloadRecordDTO.
  */
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", uses = {ResourceMapper.class})
 public interface DownloadRecordMapper extends EntityMapper<DownloadRecordDTO, DownloadRecord> {
 
+    @Mapping(source = "res.id", target = "resId")
+    DownloadRecordDTO toDto(DownloadRecord downloadRecord);
 
+    @Mapping(source = "resId", target = "res")
+    DownloadRecord toEntity(DownloadRecordDTO downloadRecordDTO);
 
     default DownloadRecord fromId(Long id) {
         if (id == null) {
