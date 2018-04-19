@@ -5,6 +5,7 @@ import com.sandman.download.common.repository.SortDto;
 import com.sandman.download.domain.Resource;
 import com.sandman.download.domain.UploadRecord;
 import com.sandman.download.repository.UploadRecordRepository;
+import com.sandman.download.security.SecurityUtils;
 import com.sandman.download.service.dto.UploadRecordDTO;
 import com.sandman.download.service.mapper.UploadRecordMapper;
 import com.sandman.download.web.rest.util.FileUtils;
@@ -56,12 +57,12 @@ public class UploadRecordService {
      * Get all the uploadRecords page.
      */
     @Transactional(readOnly = true)
-    public Map getAllUploadRecords(Integer pageNumber, Integer size) {
+    public Map getAllUploadRecords(Integer pageNumber, Integer size)throws Exception {
         log.debug("Request to get all UploadRecords");
         pageNumber = (pageNumber==null || pageNumber<1)?1:pageNumber;
         size = (size==null || size<0)?10:size;
         Pageable pageable = PageableTools.basicPage(pageNumber,size,new SortDto("desc","recordTime"));
-        Page<UploadRecord> uploadRecordPage = uploadRecordRepository.findAll(pageable);
+        Page<UploadRecord> uploadRecordPage = uploadRecordRepository.findAllByUserId(SecurityUtils.getCurrentUserId(),pageable);
         Map data = new HashMap();
         data.put("totalRow",uploadRecordPage.getTotalElements());
         data.put("totalPage",uploadRecordPage.getTotalPages());

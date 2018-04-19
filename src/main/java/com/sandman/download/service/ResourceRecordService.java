@@ -1,19 +1,26 @@
 package com.sandman.download.service;
 
+import com.sandman.download.common.repository.PageableTools;
+import com.sandman.download.common.repository.SortDto;
 import com.sandman.download.domain.ResourceRecord;
 import com.sandman.download.domain.User;
 import com.sandman.download.repository.ResourceRecordRepository;
+import com.sandman.download.security.SecurityUtils;
 import com.sandman.download.service.dto.ResourceDTO;
 import com.sandman.download.service.dto.ResourceRecordDTO;
 import com.sandman.download.service.mapper.ResourceRecordMapper;
 import com.sandman.download.web.rest.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -53,11 +60,18 @@ public class ResourceRecordService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<ResourceRecordDTO> findAll() {
+    public Map getAllResourceRecords(Integer pageNumber, Integer size)throws Exception {
         log.debug("Request to get all ResourceRecords");
-        return resourceRecordRepository.findAll().stream()
-            .map(resourceRecordMapper::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
+        pageNumber = (pageNumber==null || pageNumber<1)?1:pageNumber;
+        size = (size==null || size<0)?10:size;
+        Pageable pageable = PageableTools.basicPage(pageNumber,size,new SortDto("desc","recordTime"));
+        Page resourceRecordPage = resourceRecordRepository.findAllByUserId(SecurityUtils.getCurrentUserId(),pageable);
+        Map data = new HashMap();
+        data.put("totalRow",resourceRecordPage.getTotalElements());
+        data.put("totalPage",resourceRecordPage.getTotalPages());
+        data.put("currentPage",resourceRecordPage.getNumber()+1);//默认0就是第一页
+        data.put("recordList",resourceRecordPage.getContent());
+        return data;
     }
 
     /**

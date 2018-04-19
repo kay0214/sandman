@@ -1,6 +1,7 @@
 package com.sandman.download.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.sandman.download.domain.BaseDto;
 import com.sandman.download.service.ResourceRecordService;
 import com.sandman.download.web.rest.errors.BadRequestAlertException;
 import com.sandman.download.web.rest.util.HeaderUtil;
@@ -15,6 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -77,16 +79,20 @@ public class ResourceRecordResource {
     }
 
     /**
-     * GET  /resource-records : get all the resourceRecords.
-     *
-     * @return the ResponseEntity with status 200 (OK) and the list of resourceRecords in body
+     * GET : get all the resourceRecords.
      */
-    @GetMapping("/resource-records")
+    @GetMapping("/getAllResourceRecord")
     @Timed
-    public List<ResourceRecordDTO> getAllResourceRecords() {
+    public BaseDto getAllResourceRecords(Integer pageNumber, Integer size) {
         log.debug("REST request to get all ResourceRecords");
-        return resourceRecordService.findAll();
+        Map data = null;
+        try {
+            data = resourceRecordService.getAllResourceRecords(pageNumber, size);
+        } catch (Exception e) {
+            log.info("获取积分详情失败！异常:{}",e);
         }
+        return new BaseDto(200,"请求成功!",data);
+    }
 
     /**
      * GET  /resource-records/:id : get the "id" resourceRecord.

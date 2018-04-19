@@ -43,7 +43,12 @@ public class DownloadRecordResource {
     @Timed
     public BaseDto getAllDownloadRecords(Integer pageNumber, Integer size) {
         log.debug("REST request to get all DownloadRecords");
-        Map data = downloadRecordService.getAllDownloadRecords(pageNumber, size);
+        Map data = null;
+        try {
+            data = downloadRecordService.getAllDownloadRecords(pageNumber, size);
+        } catch (Exception e) {
+            log.info("获取下载记录失败!异常:{}",e);
+        }
         return new BaseDto(200,"请求成功!",data);
     }
 

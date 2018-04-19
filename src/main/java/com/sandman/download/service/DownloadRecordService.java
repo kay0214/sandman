@@ -5,6 +5,7 @@ import com.sandman.download.common.repository.SortDto;
 import com.sandman.download.domain.DownloadRecord;
 import com.sandman.download.domain.UploadRecord;
 import com.sandman.download.repository.DownloadRecordRepository;
+import com.sandman.download.security.SecurityUtils;
 import com.sandman.download.service.dto.DownloadRecordDTO;
 import com.sandman.download.service.mapper.DownloadRecordMapper;
 import com.sandman.download.web.rest.util.DateUtils;
@@ -60,12 +61,16 @@ public class DownloadRecordService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Map getAllDownloadRecords(Integer pageNumber, Integer size) {
+    public Map getAllDownloadRecords(Integer pageNumber, Integer size)throws Exception {
         log.debug("Request to get all DownloadRecords");
         pageNumber = (pageNumber==null || pageNumber<1)?1:pageNumber;
         size = (size==null || size<0)?10:size;
         Pageable pageable = PageableTools.basicPage(pageNumber,size,new SortDto("desc","recordTime"));
-        Page downloadRecordPage = downloadRecordRepository.findAll(pageable);
+
+
+        Page downloadRecordPage = downloadRecordRepository.findAllByUserId(SecurityUtils.getCurrentUserId(),pageable);
+
+
         List<DownloadRecord> downloadRecordList = downloadRecordPage.getContent();
         downloadRecordList.forEach(downloadRecord -> {
             System.out.println(downloadRecord.getRes().getResSize());
