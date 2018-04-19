@@ -74,14 +74,17 @@ public class UploadRecordService {
      * 资源大小：存入数据库的时候统一以byte为单位，取出来给前端的时候要做规范 -> 转换成以 B,KB,MB,GB为单位
      * */
     public List getFileSizeHaveUnit(List<UploadRecord> resourceList){
-        for(UploadRecord uploadRecord:resourceList){
-            String size = uploadRecord.getRes().getResSize();
-            uploadRecord.getRes().setResSize(FileUtils.getFileSize(Long.parseLong(size)));
-        }
-/*        resourceList.forEach(resource -> {
-            String size = resource.getRes().getResSize();
-            resource.getRes().setResSize(FileUtils.getFileSize(Long.parseLong(size)));
-        });*/
+        resourceList.forEach(uploadRecord -> {//这里必须捕获异常，否则如果size一样的话，会抛出异常
+            try{
+                String size = uploadRecord.getRes().getResSize();
+                uploadRecord.getRes().setResSize(FileUtils.getFileSize(Long.parseLong(size)));
+            }catch(Exception e){
+                log.info("size相同，抛出Numberformat异常!");
+                String size = uploadRecord.getRes().getResSize();
+                uploadRecord.getRes().setResSize(size);
+            }
+        });
+
         return resourceList;
     }
     /**

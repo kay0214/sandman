@@ -82,18 +82,16 @@ public class DownloadRecordService {
      * 资源大小：存入数据库的时候统一以byte为单位，取出来给前端的时候要做规范 -> 转换成以 B,KB,MB,GB为单位
      * */
     public List getFileSizeHaveUnit(List<DownloadRecord> resourceList){
+        resourceList.forEach(resource -> {//这里必须捕获异常，否则如果size一样的话，会抛出异常
+            try{
+                String size = resource.getRes().getResSize();
+                resource.getRes().setResSize(FileUtils.getFileSize(Long.parseLong(size)));
+            }catch(Exception e){
+                String size = resource.getRes().getResSize();
+                resource.getRes().setResSize(size);
+            }
 
-        for(DownloadRecord downloadRecord:resourceList){
-            String size = new String(downloadRecord.getRes().getResSize());
-            System.out.println("getFileSizeHaveUnit--size::::" + size);
-            downloadRecord.getRes().setResSize(FileUtils.getFileSize(Long.parseLong(size)));
-        }
-/*        resourceList.forEach(resource -> {
-            String size = resource.getRes().getResSize();
-            System.out.println("getFileSizeHaveUnit--size::::" + size);
-            resource.getRes().setResSize(FileUtils.getFileSize(Long.parseLong(size)));
-            size = null;
-        });*/
+        });
         return resourceList;
     }
     /**

@@ -246,15 +246,17 @@ public class ResourceService {
     /**
      * 资源大小：存入数据库的时候统一以byte为单位，取出来给前端的时候要做规范 -> 转换成以 B,KB,MB,GB为单位
      * */
-    public static List getFileSizeHaveUnit(List<Resource> resourceList){
-        for(Resource resource:resourceList){
-            String size = resource.getResSize();
-            resource.setResSize(FileUtils.getFileSize(Long.parseLong(size)));
-        }
-/*        resourceList.forEach(resource -> {
-            String size = resource.getResSize();
-            resource.setResSize(FileUtils.getFileSize(Long.parseLong(size)));
-        });*/
+    public List getFileSizeHaveUnit(List<Resource> resourceList){
+        resourceList.forEach(resource -> {//这里必须捕获异常，否则如果size一样的话，会抛出异常
+            try{
+                String size = resource.getResSize();
+                resource.setResSize(FileUtils.getFileSize(Long.parseLong(size)));
+            }catch(Exception e){
+                log.info("size相同，抛出Numberformat异常!");
+                String size = resource.getResSize();
+                resource.setResSize(size);
+            }
+        });
         return resourceList;
     }
 
