@@ -225,6 +225,8 @@ public class ResourceService {
     public Map getAllMyResources(Integer pageNumber,Integer size,Long userId,String sortType,String order) {
         log.debug("getAllMyResources page:{},size:{},order:{}",pageNumber,size,order);
         userId = (userId==null)?SecurityUtils.getCurrentUserId():userId;
+        if(userId==null)
+            return null;
         pageNumber = (pageNumber==null || pageNumber<1)?1:pageNumber;
         size = (size==null || size<0)?10:size;
         if(sortType==null || "".equals(sortType) || (!"ASC".equals(sortType.toUpperCase()) && !"DESC".equals(sortType.toUpperCase()))){

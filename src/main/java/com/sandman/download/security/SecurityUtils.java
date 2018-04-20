@@ -34,31 +34,51 @@ public final class SecurityUtils {
      * 返回当前用户的id
      * */
     public static Long getCurrentUserId(){
-        return getCurrentUser().getId();
+        try{
+            return getCurrentUser().getId();
+        }catch(NullPointerException e){
+            return null;
+        }
     }
     /**
      * 返回当前用户的userName
      * */
     public static String getCurrentUserName(){
-        return getCurrentUser().getUserName();
+        try{
+            return getCurrentUser().getUserName();
+        }catch(NullPointerException e){
+            return null;
+        }
     }
     /**
      * 返回当前用户的mobile
      * */
     public static String getCurrentUserMobile(){
-        return getCurrentUser().getMobile();
+        try{
+            return getCurrentUser().getMobile();
+        }catch(NullPointerException e){
+            return null;
+        }
     }
     /**
      * 返回当前用户的email
      * */
     public static String getCurrentUserEmail(){
-        return getCurrentUser().getEmail();
+        try{
+            return getCurrentUser().getEmail();
+        }catch(NullPointerException e){
+            return null;
+        }
     }
     /**
      * 返回当前用户的gold积分
      * */
-    public static int getCurrentUserGold(){
-        return getCurrentUser().getGold();
+    public static Integer getCurrentUserGold(){
+        try{
+            return getCurrentUser().getGold();
+        }catch(NullPointerException e){
+            return null;
+        }
     }
     /**
      * Get the login of the current user.

@@ -2,25 +2,15 @@ package com.sandman.download.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.sandman.download.domain.BaseDto;
-import com.sandman.download.security.SecurityUtils;
 import com.sandman.download.service.ResourceService;
-import com.sandman.download.web.rest.util.HeaderUtil;
 import com.sandman.download.service.dto.ResourceDTO;
-import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * REST controller for managing Resource.
@@ -83,6 +73,9 @@ public class ResourceResource {
     public BaseDto getAllMyResources(Integer pageNumber,Integer size,Long userId,String sortType,String order) {
         log.info("pageNumber：{}，size：{}，userId：{}，sortType：{}，order：{}",pageNumber, size, userId, sortType, order);
         Map data = resourceService.getAllMyResources(pageNumber, size, userId, sortType, order);
+        if(data==null){
+            return new BaseDto(410,"请先登录或者传入id");
+        }
         return new BaseDto(200,"查询成功!",data);
     }
 
