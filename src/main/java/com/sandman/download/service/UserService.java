@@ -5,6 +5,7 @@ import com.sandman.download.repository.UserRepository;
 import com.sandman.download.service.dto.UserDTO;
 import com.sandman.download.service.mapper.UserMapper;
 import com.sandman.download.web.rest.util.DateUtils;
+import com.sandman.download.web.rest.util.PasswordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ public class UserService {
      */
     public UserDTO save(UserDTO userDTO) {
         log.debug("Request to save User : {}", userDTO);
+        userDTO.setPassword(PasswordUtils.getSecretPasswordSpring(userDTO.getPassword()));//密码加密
         userDTO.setGold(0);
         userDTO.setCreateTime(DateUtils.getLongTime());
         userDTO.setUpdateTime(DateUtils.getLongTime());

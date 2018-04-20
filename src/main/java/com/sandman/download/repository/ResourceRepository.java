@@ -20,5 +20,4 @@ public interface ResourceRepository extends JpaRepository<Resource, Long> {
     @Modifying
     @Query("update Resource res set res.status=0 where res.id=?1")
     public Integer delResourceById(Long id);
-    public Page<Resource> findByResNameContainingOrResDescContainingAndStatus(String resName,String resDesc,int status,Pageable pageable);
 }
