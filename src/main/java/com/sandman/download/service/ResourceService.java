@@ -276,6 +276,25 @@ public class ResourceService {
     }
 
     /**
+     * fuzzy query
+     * */
+    @Transactional(readOnly = true)
+    public Map getManyResourcesByFuzzy(Integer pageNumber,Integer size,String searchContent){
+        pageNumber = (pageNumber==null || pageNumber<1)?1:pageNumber;
+        size = (size==null || size<0)?10:size;
+        Pageable pageable = PageableTools.basicPage(pageNumber,size,new SortDto("desc","id"));//使用默认按照id倒叙排序
+        //Page page = resourceRepository.findByResNameContainingOrResDescContainingAndStatus(searchContent,searchContent,1,pageable);
+        Page page = resourceRepo.findManyResourcesByFuzzy(searchContent,pageable);
+        Map data = new HashMap();//最终返回的map
+
+        data.put("totalRow",page.getTotalElements());
+        data.put("totalPage",page.getTotalPages());
+        data.put("currentPage",page.getNumber()+1);//默认0就是第一页
+        data.put("resourceList",getFileSizeHaveUnit(page.getContent()));
+        return data;
+    }
+
+    /**
      * Delete the resource by id.
      */
     public BaseDto delResource(Long id) {

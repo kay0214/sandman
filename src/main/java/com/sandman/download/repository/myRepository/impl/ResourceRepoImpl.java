@@ -34,4 +34,17 @@ public class ResourceRepoImpl implements ResourceRepo {
         Page<Resource> resourcePage = query(sql,pageable,queryParams);
         return resourcePage;
     }
+
+    @Override
+    public Page<Resource> findManyResourcesByFuzzy(String searchContent, Pageable pageable) {
+        Map<String,Object> queryParams = Maps.newHashMap();
+
+        String sql = " FROM Resource res where (res.resName like :search OR res.resDesc like :search)";
+        String sql_query = new String();
+        sql_query += " and res.status = 1 " ;
+        queryParams.put("search", "%" + searchContent + "%");
+        sql += sql_query;
+        Page<Resource> resourcePage = query(sql,pageable,queryParams);
+        return resourcePage;
+    }
 }

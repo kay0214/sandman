@@ -98,6 +98,15 @@ public class ResourceResource {
             return new BaseDto(200,"查询成功!",resourceDTO);
         return new BaseDto(408,"资源不存在!",resourceDTO);
     }
+    /**
+     * 按照名称检索资源，查resName、resUrl和resDesc
+     * */
+    @GetMapping("/getManyResourcesByFuzzy")
+    @Timed
+    public BaseDto getManyResourcesByFuzzy(Integer pageNumber,Integer size,String search){//检索资源
+        Map data = resourceService.getManyResourcesByFuzzy(pageNumber, size, search);
+        return new BaseDto(200,"检索成功!",data);
+    }
 
     /**
      * DELETE : delete the "id" resource.

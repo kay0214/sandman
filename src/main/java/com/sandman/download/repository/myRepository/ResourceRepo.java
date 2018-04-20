@@ -4,6 +4,7 @@ import com.sandman.download.common.repository.AbstractRepository;
 import com.sandman.download.domain.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -11,4 +12,5 @@ import org.springframework.stereotype.Repository;
  */
 public interface ResourceRepo extends AbstractRepository {
     public Page<Resource> findByUserId(Long userId, Pageable pageable);
+    public Page<Resource> findManyResourcesByFuzzy(String searchContent, Pageable pageable);
 }
