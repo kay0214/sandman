@@ -94,7 +94,9 @@ public class ResourceResource {
     public BaseDto getOneResource(Long id) {
         log.debug("REST request to get one Resource : {}", id);
         ResourceDTO resourceDTO = resourceService.getOneResource(id);
-        return new BaseDto(200,"查询成功!",resourceDTO);
+        if(resourceDTO!=null)
+            return new BaseDto(200,"查询成功!",resourceDTO);
+        return new BaseDto(408,"资源不存在!",resourceDTO);
     }
 
     /**

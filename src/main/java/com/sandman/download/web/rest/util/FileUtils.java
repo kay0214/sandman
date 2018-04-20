@@ -2,6 +2,7 @@ package com.sandman.download.web.rest.util;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
+import com.sandman.download.domain.SftpParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -228,8 +229,9 @@ public class FileUtils {
      * */
     public static File getFileByMultipartFile(MultipartFile file){
         System.out.println("multipartFileName=" + file.getOriginalFilename());
-        String classPath = FileUtils.class.getResource("/").toString();
-        String filePathAndName = classPath.substring(classPath.indexOf(":")+1) + File.separator + file.getOriginalFilename();
+        //String classPath = FileUtils.class.getResource("/").toString();
+        String filePath = SftpParam.getTempFilePath();
+        String filePathAndName = filePath + File.separator + file.getOriginalFilename();
         System.out.println("::::::::::::::" + filePathAndName);
         File resultFile = new File(filePathAndName);
         try {

@@ -12,7 +12,16 @@
 # Full reference is available at:
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
-
+management:
+    security:
+        roles: ADMIN
+    context-path: /management
+    info:
+        git:
+            mode: full
+    health:
+        mail:
+            enabled: false # When using the MailService, configure an SMTP server and set this to true
 logging:
     level:
         ROOT: INFO
@@ -28,8 +37,8 @@ spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:mysql://localhost:3306/sandman?useUnicode=true&characterEncoding=utf8&useSSL=false
-        username: root
-        password:
+        username: sunpeikai
+        password: spkzq521
         hikari:
             data-source-properties:
                 cachePrepStmts: true
@@ -58,7 +67,10 @@ spring:
         locator:
             discovery:
                 enabled: true
-
+    http:
+        multipart:
+            maxFileSize: 220Mb
+            maxRequestSize: 220Mb
 liquibase:
     contexts: prod
 
@@ -132,7 +144,13 @@ jhipster:
             enabled: false
             # edit spring.metrics.export.delay-millis to set report frequency
 
-
+sftpServer:
+    userName: root
+    password: abcd54321
+    host: 39.104.80.30
+    sshPort: 22
+    prefix: /var/www/html/spkIMG
+    tempFilePath: /home/sandman #MultiPartFile转File时，临时文件存放路径
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class

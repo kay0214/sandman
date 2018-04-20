@@ -23,12 +23,27 @@
 #                    thread:
 #                        timeoutInMilliseconds: 10000
 # See https://github.com/spring-cloud/spring-cloud-netflix/issues/1330
+
+eureka:
+    instance:
+        appname: lvmh
+        instanceId: lvmh:${spring.application.instance_id:${random.value}}
+        statusPageUrlPath: ${management.context-path}/info
+        healthCheckUrlPath: ${management.context-path}/health
+        metadata-map:
+            profile: ${spring.profiles.active}
+            version: ${info.project.version}
+ribbon:
+    eureka:
+        enabled: false
+
+
 feign:
     hystrix:
-        enabled: true
+        enabled: false
 
 hystrix:
-    share-security-context: true
+    share-security-context: false
 
 management:
     security:
@@ -43,11 +58,8 @@ management:
 spring:
     application:
         name: sandman
-    profiles:
-        # The commented value for `active` can be replaced with valid Spring profiles to load.
-        # Otherwise, it will be filled in by maven when building the WAR file
-        # Either way, it can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
-        active: #spring.profiles.active#
+#    profiles:
+#        active: dev #选择配置文件
     jackson:
         serialization.write_dates_as_timestamps: false
     jpa:
