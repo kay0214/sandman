@@ -48,7 +48,9 @@ public class UserResource {
             throw new BadRequestAlertException("A new user cannot already have an ID", ENTITY_NAME, "idexists");
         }
         UserDTO result = userService.save(userDTO);
-        return new BaseDto(200,"注册成功!",result);
+        if(result!=null)
+            return new BaseDto(200,"注册成功!",result);
+        return new BaseDto(409,"用户名已存在!");
     }
 
     @PostMapping("/login")

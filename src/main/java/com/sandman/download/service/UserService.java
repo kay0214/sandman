@@ -41,6 +41,9 @@ public class UserService {
      */
     public UserDTO save(UserDTO userDTO) {
         log.debug("Request to save User : {}", userDTO);
+        User existUser = userRepository.findByUserName(userDTO.getUserName());
+        if(existUser!=null)
+            return null;
         userDTO.setPassword(PasswordUtils.getSecretPasswordSpring(userDTO.getPassword()));//密码加密
         userDTO.setGold(0);
         userDTO.setCreateTime(DateUtils.getLongTime());
