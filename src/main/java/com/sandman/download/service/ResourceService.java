@@ -68,6 +68,9 @@ public class ResourceService {
         if(file.isEmpty()){
             return new BaseDto(401,"上传文件为空!");
         }
+
+        if(resourceExist(resourceDTO.getResName(),file.getOriginalFilename()))
+            return new BaseDto(410,"请勿重复上传");
         //开始做用户资源记录
         //User user = userService.findUserByUserName(SecurityUtils.getCurrentUserLogin().get());//根据userName查询user信息
 
@@ -119,6 +122,22 @@ public class ResourceService {
             return new BaseDto(402,"上传远程服务器失败!");
         }
         return new BaseDto(200,"上传成功!",resourceMapper.toDto(resource));
+    }
+    /**
+     * 根据resName和fileName判断用户正在上传的资源是否已经存在在该用户下
+     * */
+    private boolean resourceExist(String resName,String fileName){
+
+        Resource existResource = resourceRepository.findByResName(resName);
+        if(existResource!=null)
+            return true;
+        List<Resource> resourceList = resourceRepository.findByUserId(SecurityUtils.getCurrentUserId(),null).getContent();
+        for(Resource resource:resourceList){
+            String existFileName = FileUtils.getFileNameByUrl(resource.getResUrl());
+            if(fileName.equals(existFileName))
+                return true;
+        }
+        return false;
     }
 
     /**
