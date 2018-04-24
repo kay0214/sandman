@@ -99,8 +99,11 @@ public class MicroserviceSecurityConfiguration extends WebSecurityConfigurerAdap
         .and()
             .formLogin()
             .loginProcessingUrl("/api/sandman/v1/user/login")//登录接口
+            .successForwardUrl("/api/sandman/v1/user/success")
+            //.successHandler()
+            //.defaultSuccessUrl("/api/sandman/v1/user/success",true)
             .failureForwardUrl("/api/sandman/v1/user/error")//登录失败页面
-            .defaultSuccessUrl("/api/sandman/v1/user/success")//登录成功页面
+            //.defaultSuccessUrl("/api/sandman/v1/user/login")//登录成功页面
         .and()
             .logout()
             .logoutUrl("/api/sandman/v1/user/logout").permitAll()//登出接口

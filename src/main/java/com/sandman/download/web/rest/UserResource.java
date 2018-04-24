@@ -56,18 +56,21 @@ public class UserResource {
     @PostMapping("/login")
     @Timed
     public void login(){
+        //用户登录进来所需要做的操作
         log.info("this is login page!");
     }
-    @GetMapping("/error")
+    @PostMapping("/error")
     @Timed
-    public void error(){
+    public BaseDto error(){
         log.info("login error:userName or password error!");
+        return new BaseDto(411,"用户名或密码错误!");
     }
-    @GetMapping("/success")
+    @PostMapping("/success")
     @Timed
-    public void success(){
+    public BaseDto success(){
         log.info("this userName is {}", SecurityUtils.getCurrentUserLogin().get());
         log.info("login success!");
+        return new BaseDto(200,"用户登录成功!");
     }
     @GetMapping("/logout")
     @Timed
@@ -76,7 +79,8 @@ public class UserResource {
     }
     @GetMapping("/logoutSuccess")
     @Timed
-    public void logoutSuccess(){
+    public BaseDto logoutSuccess(){
         log.info("logout success!");
+        return new BaseDto(200,"用户退出成功！");
     }
 }
