@@ -4,10 +4,8 @@
         {
             "relationshipName": "res",
             "otherEntityName": "resource",
-            "relationshipType": "one-to-one",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "downloadRecord"
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
         }
     ],
     "fields": [

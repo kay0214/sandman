@@ -25,8 +25,7 @@ public class DownloadRecord implements Serializable {
     @Column(name = "record_time")
     private Long recordTime;
 
-    @OneToOne
-    @JoinColumn(unique = true)
+    @ManyToOne
     private Resource res;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
