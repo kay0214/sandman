@@ -253,4 +253,10 @@ public class FileUtils {
     public static String getFileNameByUrl(String resUrl){
         return getPrefixByFileName(resUrl.substring(resUrl.lastIndexOf("/")+1));
     }
+    /**
+     * 根据url获取到完整的文件名，带后缀的.用于判断用户是否重复上传
+     * */
+    public static String getCompleteFileNameByUrl(String resUrl){
+        return resUrl.substring(resUrl.lastIndexOf("/")+1);
+    }
 }

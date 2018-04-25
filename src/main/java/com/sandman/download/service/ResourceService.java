@@ -69,11 +69,8 @@ public class ResourceService {
             return new BaseDto(401,"上传文件为空!");
         }
 
-        if(resourceExist(resourceDTO.getResName(),file.getOriginalFilename()))
-            return new BaseDto(410,"请勿重复上传");
-        //开始做用户资源记录
-        //User user = userService.findUserByUserName(SecurityUtils.getCurrentUserLogin().get());//根据userName查询user信息
 
+        //开始做用户资源记录
         Long userId = SecurityUtils.getCurrentUserId();//登录的时候保存的信息，不用再次查询数据库
 
         resourceDTO.setUserId(userId);//设置UserId给resource
@@ -88,6 +85,10 @@ public class ResourceService {
         resName = (resName==null || "".equals(resName) || "null".equals(resName))?FileUtils.getPrefixByFileName(file.getOriginalFilename()):resName;
         log.info("如果用户没有传入resName，默认取文件的名字:{}",resName);
         resourceDTO.setResName(resName);//如果用户设置的resName为空，将原文件名赋值给resName
+
+        //应该放在resName做好值处理后再进行一下判断，否则报空指针
+        if(resourceExist(resourceDTO.getResName(),file))
+            return new BaseDto(410,"请勿重复上传");
 
         String fileName = ("file".equals(fileType))?resName:(resName + "." + fileType);
 
@@ -126,16 +127,31 @@ public class ResourceService {
     /**
      * 根据resName和fileName判断用户正在上传的资源是否已经存在在该用户下
      * */
-    private boolean resourceExist(String resName,String fileName){
+    private boolean resourceExist(String resName,MultipartFile file){
 
-        Resource existResource = resourceRepository.findByResName(resName);
-        if(existResource!=null)
+/*        Resource existResource = resourceRepository.findByResName(resName);
+        if(existResource!=null){
+            log.info("上传的文件已经存在:{}",existResource.toString());
             return true;
+        }*/
         List<Resource> resourceList = resourceRepository.findByUserId(SecurityUtils.getCurrentUserId(),null).getContent();
         for(Resource resource:resourceList){
-            String existFileName = FileUtils.getFileNameByUrl(resource.getResUrl());
-            if(fileName.equals(existFileName))
+            if(resName.equals(resource.getResName())){
+                log.info("上传的文件已经存在:{}",resource.toString());
                 return true;
+            }
+            String existFileName = FileUtils.getCompleteFileNameByUrl(resource.getResUrl());
+            log.info("上传的文件名:{},数据库中的文件名:{},二者是否一致:{}",
+                file.getOriginalFilename(),existFileName,
+                existFileName.equals(file.getOriginalFilename()));
+            log.info("上传文件大小:{},数据库中文件大小:{},二者是否一致:{}",
+                String.valueOf(file.getSize()),resource.getResSize(),
+                resource.getResSize().equals(String.valueOf(file.getSize())));
+            if(existFileName.equals(file.getOriginalFilename())
+                && resource.getResSize().equals(String.valueOf(file.getSize()))) {
+                log.info("文件名和文件大小都一样啊:{}",existFileName);
+                return true;
+            }
         }
         return false;
     }
@@ -180,6 +196,11 @@ public class ResourceService {
             boolean success = FileUtils.download(FileUtils.getFilePathByUrl(resourceDTO.getResUrl()),fileName,response);
             if(success){//如果下载成功
                 log.info("上传下载不同人，下载成功");
+                //资源下载次数++
+                log.info("id:{}的资源下载次数+1。原下载次数:{}",resource.getId(),resource.getDownCount());
+                resource.setDownCount(resource.getDownCount()+1);
+                log.info("现下载次数:{}",resource.getDownCount());
+                resourceRepository.save(resource);
                 //用户积分操作: 下载者扣除积分，上传者加上积分
                 log.info("curUserGold={},resGold={},ownerGold={}",curUserGold,resGold,resOwner.getGold());
                 curUser.setGold(curUserGold - resGold);//如果积分足够，扣除相应积分

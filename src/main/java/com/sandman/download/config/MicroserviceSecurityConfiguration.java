@@ -86,7 +86,7 @@ public class MicroserviceSecurityConfiguration extends WebSecurityConfigurerAdap
             .antMatchers(" /api/sandman/v1/downloadRecord/getAllDownloadRecords").authenticated()//用户查看下载记录，只能查看自己的
             .antMatchers(" /api/sandman/v1/resourceRecord/getAllResourceRecord").authenticated()//用户查看积分明细，只能查看自己的
             .antMatchers(" /api/sandman/v1/resource/updateResource").authenticated()//用户更新自己的资源信息，所以要登录
-            .antMatchers("/api/sandman/v1/resource/upload").authenticated()//用户上传资源，需要登录
+            .antMatchers("/api/sandman/v1/resource/uploadResource").authenticated()//用户上传资源，需要登录
             .antMatchers("/api/sandman/v1/resource/downloadResource").authenticated()//用户下载资源，需要登录
             .antMatchers(" /api/sandman/v1/resource/getAllMyResources").permitAll()//查看资源列表，开放接口无需登录
             .antMatchers("/api/sandman/v1/resource/delResource").authenticated()//资源假删，需要登录，自己上传的资源才有权删除
