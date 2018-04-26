@@ -35,6 +35,7 @@ public class ResourceResource {
     @PostMapping("/uploadResource")
     @Timed
     public BaseDto uploadResource(ResourceDTO resourceDTO,@RequestParam("file")MultipartFile file) throws IOException {
+        //TODO:限制用户上传过大的文件
         log.info("用户上传资源:{}" + file.getOriginalFilename());
         return resourceService.uploadRes(resourceDTO,file);
     }

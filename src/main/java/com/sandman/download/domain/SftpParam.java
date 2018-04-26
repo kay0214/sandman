@@ -34,10 +34,12 @@ public class SftpParam {
     private void setSshPort(int sshPort) {
         SSH_PORT = sshPort;
     }
+
     @Value("${sftpServer.prefix}")
     public void setPathPrefix(String pathPrefix) {
         PATH_PREFIX = pathPrefix;
     }
+
     @Value("${sftpServer.tempFilePath}")
     public void setTempFilePath(String tempFilePath) {
         TEMP_FILE_PATH = tempFilePath;

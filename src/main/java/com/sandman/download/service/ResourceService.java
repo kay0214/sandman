@@ -68,7 +68,10 @@ public class ResourceService {
         if(file.isEmpty()){
             return new BaseDto(401,"上传文件为空!");
         }
-
+        if(file.getSize()>(220*1024*1024)){
+            return new BaseDto(412,"单个文件最大220MB!");
+        }
+        //230686720
 
         //开始做用户资源记录
         Long userId = SecurityUtils.getCurrentUserId();//登录的时候保存的信息，不用再次查询数据库
@@ -141,12 +144,12 @@ public class ResourceService {
                 return true;
             }
             String existFileName = FileUtils.getCompleteFileNameByUrl(resource.getResUrl());
-            log.info("上传的文件名:{},数据库中的文件名:{},二者是否一致:{}",
+/*            log.info("上传的文件名:{},数据库中的文件名:{},二者是否一致:{}",
                 file.getOriginalFilename(),existFileName,
                 existFileName.equals(file.getOriginalFilename()));
             log.info("上传文件大小:{},数据库中文件大小:{},二者是否一致:{}",
                 String.valueOf(file.getSize()),resource.getResSize(),
-                resource.getResSize().equals(String.valueOf(file.getSize())));
+                resource.getResSize().equals(String.valueOf(file.getSize())));*/
             if(existFileName.equals(file.getOriginalFilename())
                 && resource.getResSize().equals(String.valueOf(file.getSize()))) {
                 log.info("文件名和文件大小都一样啊:{}",existFileName);

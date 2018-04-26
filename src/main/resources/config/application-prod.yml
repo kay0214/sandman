@@ -69,8 +69,10 @@ spring:
                 enabled: true
     http:
         multipart:
-            maxFileSize: 220Mb
-            maxRequestSize: 220Mb
+            maxFileSize: 220MB #上传的单个文件大小限制为220MB
+            maxRequestSize: 220MB #批量上传时，上传的全部文件大小限制为220MB
+            #maxFileSize: -1 #上传的单个文件大小无限制
+            #maxRequestSize: -1 #批量上传时，上传的全部文件大小无限制
 liquibase:
     contexts: prod
 
@@ -158,6 +160,11 @@ sftpServer:
     sshPort: 22
     prefix: /var/www/html/spkIMG
     tempFilePath: /home/sandman #MultiPartFile转File时，临时文件存放路径
+elasticsearch:
+    clusterName: sunpk-es
+    host: 192.168.1.130
+    port: 9303
+
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class

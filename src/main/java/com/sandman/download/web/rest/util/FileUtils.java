@@ -112,7 +112,7 @@ public class FileUtils {
      * @Param file 需要上传的文件
      */
     public static boolean upload(String filePath, String fileName, File file) {
-        ChannelSftp sftp = SftpUtils.getSftp();
+        ChannelSftp sftp = SftpPool.getSftp();//从连接池获取一个连接
         mkDirectory(filePath);
         System.out.println("FileUtils.upload:::filePath=" + filePath + ";fileName=" + fileName);
         try {
@@ -135,7 +135,7 @@ public class FileUtils {
             for (int i = 0; i < v.size(); i++) {
                 System.out.println(v.get(i));
             }*/
-            SftpUtils.closeSftpCon(sftp);//关闭sftp连接
+            SftpPool.returnSftp(sftp);//将一个连接归还连接池
         } catch (IOException e1) {
             System.out.println(e1);
             return false;
@@ -154,7 +154,7 @@ public class FileUtils {
      */
     public static boolean download(String filePath, String fileName, HttpServletResponse response) {
 
-        ChannelSftp sftp = SftpUtils.getSftp();
+        ChannelSftp sftp = SftpPool.getSftp();//从连接池获取到一个连接
         byte[] buff = new byte[1024];
         BufferedInputStream bis = null;
         OutputStream os = null;
@@ -191,7 +191,7 @@ public class FileUtils {
                     System.out.println(e);
                 }
             }
-            SftpUtils.closeSftpCon(sftp);//关闭sftp
+            SftpPool.returnSftp(sftp);//将一个连接归还连接池
 
         }
 
@@ -200,7 +200,7 @@ public class FileUtils {
      * 在远程服务器上创建文件夹
      * */
     public static void mkDirectory(String filePath){
-        ChannelSftp sftp = SftpUtils.getSftp();
+        ChannelSftp sftp = SftpPool.getSftp();//从连接池获取到一个连接
         System.out.println("FileUtils.mkDirectory::::filePath=" + filePath);
         try {//首先跳到电脑根目录
             sftp.cd("/");
@@ -221,7 +221,7 @@ public class FileUtils {
                 }
             }
         }
-        SftpUtils.closeSftpCon(sftp);
+        SftpPool.returnSftp(sftp);//将一个连接归还连接池
     }
 
     /**

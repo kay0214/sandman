@@ -58,8 +58,8 @@ management:
 spring:
     application:
         name: sandman
-#    profiles:
-#        active: dev #选择配置文件
+    profiles:
+        active: prod #选择配置文件
     jackson:
         serialization.write_dates_as_timestamps: false
     jpa:

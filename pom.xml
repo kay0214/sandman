@@ -856,7 +856,7 @@
             </build>
             <properties>
                 <!-- default Spring profiles -->
-                <spring.profiles.active>dev,swagger</spring.profiles.active>
+                <spring.profiles.active>prod,swagger</spring.profiles.active>
             </properties>
         </profile>
         <profile>
