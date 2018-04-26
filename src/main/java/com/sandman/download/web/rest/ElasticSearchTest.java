@@ -18,16 +18,16 @@ import java.util.List;
  * Created by wangj on 2018/4/24.
  */
 public class ElasticSearchTest {
-    public static void main(String[] args) throws IOException {
+/*    public static void main(String[] args) throws IOException {
         System.out.println("max id is:" + getMaxId());
 
-/*        TransportClient client = getClient();
+*//*        TransportClient client = getClient();
 
         IndexResponse response = client.prepareIndex("ik_test","person","6").setSource(XContentFactory.jsonBuilder()
             .startObject().field("content","我爱你中国，亲爱的母亲!")
             .endObject()).get();
-        System.out.println(response.toString());*/
-    }
+        System.out.println(response.toString());*//*
+    }*/
     public static String createIndex(String index,String type){
         return null;
     }

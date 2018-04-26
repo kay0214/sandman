@@ -327,6 +327,7 @@ public class ResourceService {
     public Map getManyResourcesByFuzzy(Integer pageNumber,Integer size,String searchContent){
         pageNumber = (pageNumber==null || pageNumber<1)?1:pageNumber;
         size = (size==null || size<0)?10:size;
+        searchContent = (null==searchContent)?"":searchContent;//做处理，如果前端直接没有定义searchContent，则将searchContent置为""
         Pageable pageable = PageableTools.basicPage(pageNumber,size,new SortDto("desc","id"));//使用默认按照id倒叙排序
         //Page page = resourceRepository.findByResNameContainingOrResDescContainingAndStatus(searchContent,searchContent,1,pageable);
         Page page = resourceRepo.findManyResourcesByFuzzy(searchContent,pageable);
