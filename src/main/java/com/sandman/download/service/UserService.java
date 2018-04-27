@@ -1,5 +1,6 @@
 package com.sandman.download.service;
 
+import com.sandman.download.domain.BaseDto;
 import com.sandman.download.domain.User;
 import com.sandman.download.domain.ValidateCode;
 import com.sandman.download.repository.UserRepository;
@@ -10,6 +11,7 @@ import com.sandman.download.web.rest.util.PasswordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,15 +42,26 @@ public class UserService {
 
     /**
      * Save a user.
-     *
-     * @param userDTO the entity to save
-     * @return the persisted entity
      */
-    public UserDTO createUser(UserDTO userDTO) {
+    public BaseDto createUser(UserDTO userDTO) {
         log.debug("Request to save User : {}", userDTO);
         User existUser = userRepository.findByUserName(userDTO.getUserName());
-        if(existUser!=null)
-            return null;
+        if(existUser!=null)//用户名校验
+            return new BaseDto(409,"用户名已存在!");
+
+        //验证码过期校验
+        boolean overdue = overdueCode(userDTO);
+        if(overdue){//已经过期return，未过期就继续往下走
+            deleteValidateCode(userDTO);//验证码过期，异步删除验证码
+            return new BaseDto(418,"未发送验证码或验证码已过期!");
+        }
+
+        //验证码正确性校验
+        boolean verifySuccess = verifyCode(userDTO);
+        if(!verifySuccess)//校验失败return，否则继续往下走
+            return new BaseDto(417,"验证码不正确!",userDTO);
+        //所有校验已经完成，创建用户
+
         userDTO.setPassword(PasswordUtils.getSecretPasswordSpring(userDTO.getPassword()));//密码加密
         userDTO.setGold(0);
         userDTO.setCreateTime(DateUtils.getLongTime());
@@ -56,26 +69,48 @@ public class UserService {
         userDTO.setAvailable(1);
         User user = userMapper.toEntity(userDTO);
         user = userRepository.save(user);
-        validateCodeService.deleteByContact(userDTO.getEmail());//如果是使用email注册成功，按照email删除验证码
-        validateCodeService.deleteByContact(userDTO.getMobile());//如果是使用手机号注册成功，按照手机号删除验证码
-        return userMapper.toDto(user);
+        deleteValidateCode(userDTO);//注册完成，异步删除验证码
+        return new BaseDto(200,"注册成功!",userMapper.toDto(user));
+
     }
     public UserDTO updateUser(User user){
         user.setUpdateTime(DateUtils.getLongTime());
         return userMapper.toDto(userRepository.save(user));
     }
-
     /**
-     * 验证码校验
+     * 验证邮箱是否已经被绑定
+     * */
+    public BaseDto emailExist(){
+
+    }
+    /**
+     * 验证码过期校验
+     * */
+    public boolean overdueCode(UserDTO userDTO){//直接按照邮箱找，省了发手机短信的钱。后期要改造这里
+        ValidateCode validateCode = validateCodeService.findByContact(userDTO.getEmail());
+        if(null==validateCode || DateUtils.getLongTime()>validateCode.getDeadLine()){
+            return true;
+        }
+        return false;
+    }
+    /**
+     * 验证码正确性校验
      * */
     public boolean verifyCode(UserDTO userDTO){//直接按照邮箱找，省了发手机短信的钱。后期要改造这里
         ValidateCode validateCode = validateCodeService.findByContact(userDTO.getEmail());
-        if(DateUtils.getLongTime()>validateCode.getDeadLine()){
+        if(null==validateCode || DateUtils.getLongTime()>validateCode.getDeadLine()){
             return false;
         }
         return userDTO.getValidateCode().equals(validateCode.getCode());
     }
-
+    /**
+     * 删除已经完成注册的验证码和校验失败的验证码.异步删除
+     * */
+    @Async
+    public void deleteValidateCode(UserDTO userDTO){
+        validateCodeService.deleteByContact(userDTO.getEmail());//如果是使用email注册成功，按照email删除验证码
+        validateCodeService.deleteByContact(userDTO.getMobile());//如果是使用手机号注册成功，按照手机号删除验证码
+    }
     /**
      * Get all the users.
      *

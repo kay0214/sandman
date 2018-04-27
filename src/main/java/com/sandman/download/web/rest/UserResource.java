@@ -12,6 +12,7 @@ import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -42,27 +43,21 @@ public class UserResource {
      */
     @PostMapping("/createUser")
     @Timed
-    public BaseDto createUser(@RequestBody UserDTO userDTO) throws URISyntaxException {
+    public BaseDto createUser(@RequestBody UserDTO userDTO) throws URISyntaxException {//这里进行简单校验，在service里面进行复杂校验
         log.debug("REST request to save User : {}", userDTO);
         if (userDTO.getId() != null) {
             return new BaseDto(415,"创建用户你带什么ID啊!");
         }
         if(userDTO.getValidateCode()==null || "".equals(userDTO.getValidateCode())){
-            return new BaseDto(416,"请先填写验证码");
+            return new BaseDto(416,"请先填写验证码!");
         }
 
-        //验证码校验
-        boolean verifySuccess = userService.verifyCode(userDTO);
-        UserDTO result = null;
-        if(verifySuccess){
-            result = userService.createUser(userDTO);
-        }else{
-            return new BaseDto(417,"验证码校验失败",userDTO);
-        }
+        return userService.createUser(userDTO);
+    }
+    @GetMapping("/emailExist")
+    @Timed
+    public BaseDto emailExist(@RequestBody UserDTO userDTO){
 
-        if(result!=null)
-            return new BaseDto(200,"注册成功!",result);
-        return new BaseDto(409,"用户名已存在!");
     }
 
     @PostMapping("/login")
