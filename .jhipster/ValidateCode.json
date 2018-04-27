@@ -1,0 +1,38 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "contact",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "code",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "createTime",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "deadLine",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "isValid",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "sended",
+            "fieldType": "Integer"
+        }
+    ],
+    "changelogDate": "20180427080132",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "validate_code",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no",
+    "microserviceName": "sandman",
+    "searchEngine": false
+}

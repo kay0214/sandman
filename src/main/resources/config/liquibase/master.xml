@@ -10,6 +10,7 @@
     <include file="config/liquibase/changelog/20180412070317_added_entity_ResourceRecord.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180412070459_added_entity_UploadRecord.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180412070627_added_entity_DownloadRecord.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180427080132_added_entity_ValidateCode.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20180412070459_added_entity_constraints_UploadRecord.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180412070627_added_entity_constraints_DownloadRecord.xml" relativeToChangelogFile="false"/>

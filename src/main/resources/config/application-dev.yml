@@ -165,7 +165,13 @@ elasticsearch:
     clusterName: sunpk-es
     host: 192.168.1.130
     port: 9303
-
+mail:
+    smtp:
+        host: smtp.yeah.net
+        port: 25
+    senderAccount: sunpeikai@yeah.net
+    password: spkzq521
+    myNickName: sandman
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class

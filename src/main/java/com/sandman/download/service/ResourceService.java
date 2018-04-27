@@ -209,8 +209,8 @@ public class ResourceService {
                 curUser.setGold(curUserGold - resGold);//如果积分足够，扣除相应积分
                 int ownerGold = resOwner.getGold();
                 resOwner.setGold(ownerGold + resGold);//资源拥有者加上相应积分
-                userService.save(curUser);
-                userService.save(resOwner);
+                userService.updateUser(curUser);
+                userService.updateUser(resOwner);
 
             }else{//下载失败，两个用户信息还没有保存，所以只需要删除日志记录和积分记录即可
                 log.info("上传下载不同人,下载失败");

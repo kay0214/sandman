@@ -45,9 +45,21 @@ public class UserResource {
     public BaseDto createUser(@RequestBody UserDTO userDTO) throws URISyntaxException {
         log.debug("REST request to save User : {}", userDTO);
         if (userDTO.getId() != null) {
-            throw new BadRequestAlertException("A new user cannot already have an ID", ENTITY_NAME, "idexists");
+            return new BaseDto(415,"创建用户你带什么ID啊!");
         }
-        UserDTO result = userService.save(userDTO);
+        if(userDTO.getValidateCode()==null || "".equals(userDTO.getValidateCode())){
+            return new BaseDto(416,"请先填写验证码");
+        }
+
+        //验证码校验
+        boolean verifySuccess = userService.verifyCode(userDTO);
+        UserDTO result = null;
+        if(verifySuccess){
+            result = userService.createUser(userDTO);
+        }else{
+            return new BaseDto(417,"验证码校验失败",userDTO);
+        }
+
         if(result!=null)
             return new BaseDto(200,"注册成功!",result);
         return new BaseDto(409,"用户名已存在!");

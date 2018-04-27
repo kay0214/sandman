@@ -19,6 +19,8 @@ public class UserDTO implements Serializable {
 
     private String email;
 
+    private String validateCode;
+
     private Integer gold;
 
     private Integer available;
@@ -65,6 +67,14 @@ public class UserDTO implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getValidateCode() {
+        return validateCode;
+    }
+
+    public void setValidateCode(String validateCode) {
+        this.validateCode = validateCode;
     }
 
     public Integer getGold() {
@@ -128,6 +138,7 @@ public class UserDTO implements Serializable {
             ", password='" + getPassword() + "'" +
             ", mobile='" + getMobile() + "'" +
             ", email='" + getEmail() + "'" +
+            ", validateCode=" + getValidateCode() +
             ", gold=" + getGold() +
             ", available=" + getAvailable() +
             ", createTime=" + getCreateTime() +
