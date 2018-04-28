@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import org.springframework.data.jpa.repository.*;
 
+import java.util.List;
+
 
 /**
  * Spring Data JPA repository for the User entity.
@@ -13,4 +15,6 @@ import org.springframework.data.jpa.repository.*;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     public User findByUserName(String userName);
+    public List<User> findByEmail(String email);
+    public List<User> findByMobile(String mobile);
 }

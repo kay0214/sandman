@@ -15,8 +15,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -78,10 +80,19 @@ public class UserService {
         return userMapper.toDto(userRepository.save(user));
     }
     /**
-     * 验证邮箱是否已经被绑定
+     * 验证联系方式是否已经被绑定，这里判定是何种联系方式的方法是正则表达式
      * */
-    public BaseDto emailExist(){
+    public Integer contactExist(String contact){
+        List<User> userList = new ArrayList<>();
+        if(contact.contains("@")){//验证邮箱是否已经被绑定
+            userList = userRepository.findByEmail(contact);
+        }else{//验证手机号是否已经被绑定
+            userList = userRepository.findByMobile(contact);
+        }
 
+        if(userList.size()>0)//userList>0，表示已经存在，返回1
+            return 1;
+        return 2;
     }
     /**
      * 验证码过期校验
