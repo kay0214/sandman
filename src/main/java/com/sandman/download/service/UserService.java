@@ -4,6 +4,7 @@ import com.sandman.download.domain.BaseDto;
 import com.sandman.download.domain.User;
 import com.sandman.download.domain.ValidateCode;
 import com.sandman.download.repository.UserRepository;
+import com.sandman.download.security.SecurityUtils;
 import com.sandman.download.service.dto.UserDTO;
 import com.sandman.download.service.mapper.UserMapper;
 import com.sandman.download.web.rest.util.DateUtils;
@@ -74,6 +75,14 @@ public class UserService {
         deleteValidateCode(userDTO);//注册完成，异步删除验证码
         return new BaseDto(200,"注册成功!",userMapper.toDto(user));
 
+    }
+    public UserDTO getCurUserInfo(){
+        User currentUser = userRepository.findOne(SecurityUtils.getCurrentUserId());//根据userId查询user信息
+        UserDTO user = userMapper.toDto(currentUser);
+        user.setPassword(null);
+        user.setMobile(null);
+        user.setEmail(null);
+        return user;
     }
     public UserDTO updateUser(User user){
         user.setUpdateTime(DateUtils.getLongTime());

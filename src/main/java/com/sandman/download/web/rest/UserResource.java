@@ -56,6 +56,11 @@ public class UserResource {
 
         return userService.createUser(userDTO);
     }
+    @GetMapping("/getCurUserInfo")
+    @Timed
+    public BaseDto getCurUserInfo(){
+        return new BaseDto(200,"查询成功!",userService.getCurUserInfo());
+    }
     @GetMapping("/contactExist")
     @Timed
     public Map<String, Integer> contactExist(String contact){
