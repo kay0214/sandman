@@ -59,7 +59,11 @@ public class UserResource {
     @GetMapping("/getCurUserInfo")
     @Timed
     public BaseDto getCurUserInfo(){
-        return new BaseDto(200,"查询成功!",userService.getCurUserInfo());
+        UserDTO user = userService.getCurUserInfo();
+        if(user!=null){
+            return new BaseDto(200,"查询成功!",user);
+        }
+        return new BaseDto(419,"用户未登录!");
     }
     @GetMapping("/contactExist")
     @Timed

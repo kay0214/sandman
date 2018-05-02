@@ -77,7 +77,10 @@ public class UserService {
 
     }
     public UserDTO getCurUserInfo(){
-        User currentUser = userRepository.findOne(SecurityUtils.getCurrentUserId());//根据userId查询user信息
+        Long userId = SecurityUtils.getCurrentUserId();
+        if(userId==null)
+            return null;
+        User currentUser = userRepository.findOne(userId);//根据userId查询user信息
         UserDTO user = userMapper.toDto(currentUser);
         user.setPassword(null);
         user.setMobile(null);
